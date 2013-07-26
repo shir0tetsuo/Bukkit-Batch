@@ -16,9 +16,9 @@ REM       Most computers will get the latest Java update automatically.
 REM ////////////////////////////////////////////////////////////////////////
 REM Below is the version number in % states. They will be read when
 REM they are prompted.
-set FVSShort=RB774b0
-set FVSLong=RUNBUKK_7.7.4b0
-set FVSSplash=RB7.7.4b0
+set FVSShort=RB763b12
+set FVSLong=RUNBUKK_7.6.3b12
+set FVSSplash=RB7.6.3b12
 set FVS
 set settingsF=settings.rbk
 set jarfile=0.txt

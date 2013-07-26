@@ -91,7 +91,7 @@ echo Copyright 2013 shir0tetsuo     -            .
 echo                                            (
 echo          *   GIGABYTES: %GB%                                *
 echo                                             `
-echo    *  %FVSSplash%   *      _..---""""-...     )
+echo    *  %FVSSplash%  *      _..---""""-...     )
 echo                       .--'              `   .`
 echo            -      ._.'     .   .      .-.   (    *
 echo                  / -     .       .    `-   (   .      .=.
@@ -117,7 +117,7 @@ echo                                -            .
 echo                                            (
 echo          *   I AM NOT RESPONSIBLE FOR ANY                *
 echo              LOSS OF DATA THAT MAY OCCUR    `
-echo    *  %FVSSplash%   *  DUE TO MODIFYING THE CONTENTS
+echo    *  %FVSSplash%  *  DUE TO MODIFYING THE CONTENTS
 echo                       .--'     OF THIS FILE OR NOT FOLLOWING
 echo            -      ._.'     .   .      .-THE INSTRUCTIONS!
 echo                  / -     .       .    `-   (   .      .=.
