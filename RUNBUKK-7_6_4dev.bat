@@ -122,7 +122,7 @@ color 0F
 goto reset1
 )
 title [RUNBUKK7]
-color 1F
+color 70
 cls
 echo Copyright 2013 shir0tetsuo     -            .
 echo                                            (
