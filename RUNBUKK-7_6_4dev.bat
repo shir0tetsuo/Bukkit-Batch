@@ -10,6 +10,8 @@ REM //                  did everything from scratch.                      //
 REM //                                                                    //
 REM //IF YOU REQUIRE SPECIAL JAVA PARAMETERS, GO TO THE "///// RUN" LINES //
 REM //                     Love, NightDelSolEXE7                          //
+REM //                                                                    //
+REM //  New feature to escape splash screen: if exist SkipSplash = true   //
 REM ////////////////////////////////////////////////////////////////////////
 REM                 JAVA IS A REQUIREMENT TO RUN ANY SERVER!
 REM       Most computers will get the latest Java update automatically.
@@ -23,6 +25,7 @@ set FVS
 set settingsF=settings.rbk
 set jarfile=0.txt
 set runmenu=0
+set SkipFile=SkipSplash.rbk
 REM ////////////////////////////////////////////////////////////////////////
 REM ////////////////////////////////////////////////////////////////////////
 REM ///////////// <,>,>>         SWITCHES                    ///////////////
@@ -31,6 +34,34 @@ REM ////////////////////////////////////////////////////////////////////////
 REM %settingsF%
 REM /////////////////////////////
 REM Line 1 = %jarfile%         The jar name. -jar     RUN ONCE STUFF
+REM Line 2 = %UL1%             0 = Null 1 = Unloaded  maploader function
+REM ///////// BELOW ARE TEMPORARY SWITCHES /////////
+REM Line 3 = %ULTMP%        UNLFile name, if defined  maploader function
+REM Line 4 = %ULOFN%       Original unloaded file nm  maploader function
+REM Line 5 = %ULOWN%          Original Default World  maploader function
+REM 
+REM echo %ULOWN% = Current Default File
+REM                    [world]
+REM                    [world-wanna-switch-to]
+REM     0=unloaded     read input = Default World, sets %ULOWN%=world
+REM                    read input = Unloaded Name, sets %ULOFN%=world-wanna-switch-to
+REM     rename %ULOWN%=%ULOWN%.u    (world -- world.u)
+REM     rename %ULOFN%=%ULOWN%      (world-wanna-switch-to -- world)
+REM     set Line 2 = 1              (UNLOADED=TRUE)
+REM     set Line 3 = %ULOWN%        (%ULTMP% if exist, [...] rename world.u world)
+REM     set Line 4 = %ULOFN%        (world-wanna-switch-to)
+REM     set Line 5 = %ULOWN%        (world)
+
+REM                    [world.u]
+REM                    [world (world-wanna-switch-to)]
+REM     if %UL1%==0 goto skipLL
+REM     if exist %ULTMP%.u do (
+REM     echo Unloaded File: %ULTMP% (world)
+REM     echo Loaded File: %ULOFN% (world-wanna-switch-to)
+REM     rename %ULOWN% %ULOFN%
+REM     rename %ULTMP%.u %ULOWN%
+REM     set Line 2 = 0 & del Lines 3-4 (set %ULOWN% & %ULOFN%==0)
+REM     )
 REM /////////////////////////////
 REM /////////////////////////////
 REM GBUsage.txt
@@ -69,6 +100,8 @@ echo.
 echo This message will disappear shortly.
 ping localhost -n 10 >nul
 cls
+REM SET UNLOADED SWITCH = FALSE (0) for maploader
+set UL1=0
 echo (RUN ONCE)
 echo What is your bukkit version file name? (IMPORTANT: INCLUDE .JAR)
 echo Your bukkit jar CANNOT contain ANY spaces.
@@ -77,13 +110,14 @@ echo.
 :nopero
 SET /P jarfile=/X.jarfile/$ 
 (echo %JARFILE%)> %settingsF%
+(echo %UL1%)>> %settingsF%
 if not exist %jarfile% goto nopero
 
 :splash
 Rem ////////////////////////////////////////////////////////////////////////
 Rem /////////////                 SPLASH                     ///////////////
 Rem ////////////////////////////////////////////////////////////////////////
-
+if exist %SkipFile% goto reset1
 title [RUNBUKK7]
 color 1F
 cls
@@ -219,6 +253,7 @@ if %runmenu%==debug pause
 if %runmenu%==debug @echo on
 if %runmenu%==debug goto freset
 if %runmenu%==debug.s @echo on &goto db.s
+if %runmenu%==options goto options
 echo.
 echo %runmenu% is not an option or was typed incorrectly.
 echo You must enter one of the options displayed in lower case.
@@ -274,23 +309,52 @@ echo BETA
 echo /////////////////////////////////////////////////////////////////////////
 echo.
 echo.
-set UnloadedMap=0
-REM LINE WRITE TESTING
-(echo %JARFILE%)> %settingsF%
-(echo %UnloadedMap%)>> %settingsF%
-set UnloadedMap=1
-echo.
-echo SET UNLOADED= %UnloadedMap%
-if exist %settingsF% (
-echo Loading.
-(
-set /p JARFILE=
-set /p UnloadedMap=
-)<%SettingsF%
-)
-echo Load Complete. %Jarfile% %UnloadedMap%
 pause >nul
 REM ------------------------------------------------------------ MLU1 END
+REM ////////////////////////////////////////////////////////////
+REM ////////////////////////////////////////////////////////////
+REM                           OPTIONS
+REM              SSW = Options Read
+:options
+title [RUNBUKK7] - Options
+cls
+echo BETA
+echo.
+echo //////////// SPLASH CONTROLLER /////
+echo SkipSplash.True     SkipSplash.False
+echo.
+if exist %SkipFile% echo ///SkipSplash.True
+if not exist %SkipFile% echo ///SkipSplash.False
+echo.
+echo //////////// GO BACK TO MAIN MENU //
+echo menu
+echo.
+echo.
+set SSW=err2
+:SSWe
+set /p SSW=/%FVSShort%.MainMenu/Options/$ 
+if %SSW%==SkipSplash.True (
+echo Delete this file if you want to see the splash screen.> %SkipFile%
+echo.
+echo The operation completed successfully.
+pause
+goto options
+)
+if %SSW%==SkipSplash.False (
+if exist %SkipFile% del %SkipFile%
+echo.
+echo The operation completed successfully.
+pause
+goto options
+)
+if %SSW%==err2 (
+goto SSWe
+)
+if %SSW%==menu goto reset1
+echo.
+echo That is not a valid command.
+echo.
+goto SSWe
 REM ////////////////////////////////////////////////////////////
 REM ////////////////////////////////////////////////////////////
 REM //////////////////////////////////////////////////////////// END TOOLS
@@ -414,7 +478,7 @@ REM ////////////////////////////////////////////////////////////
 REM ////////////////////////////////////////////////////////////
 :end
 cls
-echo Thank you for using RUNBUKK!
+echo Thank you for using %FVSLong%!
 pause
 exit
 REM ////////////////////////////////////////////////////////////
