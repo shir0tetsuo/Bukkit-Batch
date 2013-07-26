@@ -22,7 +22,7 @@ set FVSShort=RB774b0
 set FVSLong=RUNBUKK_7.7.4b0
 set FVSSplash=RB7.7.4b0
 set FVS
-set settingsF=settings.rbk
+set settingsF=Settings.rbk
 set jarfile=0.txt
 set runmenu=0
 set SkipFile=SkipSplash.rbk
@@ -117,7 +117,10 @@ if not exist %jarfile% goto nopero
 Rem ////////////////////////////////////////////////////////////////////////
 Rem /////////////                 SPLASH                     ///////////////
 Rem ////////////////////////////////////////////////////////////////////////
-if exist %SkipFile% goto reset1
+if exist %SkipFile% (
+color 0F
+goto reset1
+)
 title [RUNBUKK7]
 color 1F
 cls
@@ -330,6 +333,7 @@ echo //////////// GO BACK TO MAIN MENU //
 echo menu
 echo.
 echo.
+REM ////////////////////////////////////////////////////////////
 set SSW=err2
 :SSWe
 set /p SSW=/%FVSShort%.MainMenu/Options/$ 
