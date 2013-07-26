@@ -193,11 +193,11 @@ title [RUNBUKK7] - Start Menu
 echo ________________________________________________________
 echo ________________________________________________________
 echo /R///////////////////////////////////////////////C//////
-echo /U////       run        /// checkgb  options /////O/////
+echo /U////       run        /// checkgb          /////O/////
 echo /N//// loop    loop_afk ///     purgelogs    //////N////
-echo ////////////////////////////////////////////////////F///
+echo /////////////// 2.0 //////////////// 1.0 ///////////F///
 echo /R////    maploader     /// fullreset   help ////////I//
-echo /B///////////////////////// debug    debug.s /////////G/
+echo /B///////////// 0.9 /////// debug    debug.s /////////G/
 echo /////////////////////////////////////// quit ///////////
 set runmenu=err
 set /p runmenu= /%FVSShort%.MainMenu/$ 
