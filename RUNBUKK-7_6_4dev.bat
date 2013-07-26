@@ -265,116 +265,31 @@ REM ////////////////////////////////////////////////////////////
 REM ------------------------------------------------------------ MLU1
 REM This is a BETA! The coding is NOT compressed!
 :unload
-title [RUNBUKK7] - Map Loading Utility 0.9 BETA
+title [RUNBUKK7] - Map Loading Utility 1 BETA
 cls
+echo Skip pull lines test
+echo.
+echo.
 echo BETA
-echo                             Map Loading Utility
-echo                                      0.9
+echo /////////////////////////////////////////////////////////////////////////
 echo.
 echo.
-echo This is a very simple map loading utility built imported from Server6.
-echo          !!! You don't need to type in .unloaded in the file name !!!
-echo          !!!      Special characters might crash this console     !!!
-echo            PLEASE NOTE, THIS IS NOT FOR MULTIPLE SLOTS, JUST LOADING
+set UnloadedMap=0
+REM LINE WRITE TESTING
+(echo %JARFILE%)> %settingsF%
+(echo %UnloadedMap%)>> %settingsF%
+set UnloadedMap=1
 echo.
-echo Enter the name of your world folder below. (World is Default)
-echo On the second line, type unload or load. (Unload is Default)
-echo If you are here by mistake, type menu to go back to the Server6 menu.
-echo.
-SET MLU1=world
-SET /P MLU1= //S6/MLU: 
-if %MLU1%==menu goto debug
-if not exist %MLU1% goto nef
-:refunction 
-SET MLU2=unload
-SET /P MLU2= //S6/MLU/%MLU1%: 
-if %MLU2%==unload goto RunFCH
-if %MLU2%==load goto RunFCH
-echo You have typed in an incorrect function.
-echo.
-echo.
-goto refunction
-:RunFCH
-echo.
-echo If the information displayed is correct, press ENTER to execute.
-echo Type abort to re-enter the parameters, or type menu to exit MLU.
-echo.
-SET FCH=execute
-SET /P FCH= %MLU2% %MLU1%: 
-if %FCH%==execute goto MLUE
-if %FCH%==menu goto debug
-if %FCH%==abort goto unload
-echo.
-echo The command was not entered properly.
-echo Please make sure that you enter the command in lower case.
-echo You will be returned to the main menu.
-pause
-goto debug
-
-:MLUE
-REM ---------------------------- FNS ---------------------------
-cls
-if %MLU2%==unload goto unldline
-if %MLU2%==load goto loadline
-echo An error has been returned.
-pause
-exit
-:unldline
-cls
-echo Attempting to unload %MLU1%...
-if exist %MLU1%.unloaded goto nef2
-if not exist %MLU1% goto nef3
-rename %MLU1% %MLU1%.unloaded
-goto confirmation
-:loadline
-cls
-echo Attempting to load %MLU1%...
-if not exist %MLU1%.unloaded goto nef3
-if exist %MLU1% goto nef2
-rename %MLU1%.unloaded %MLU1%
-goto confirmation
-REM --------------------- NON EXISTENT FILE LINES --------------
-:nef
-if exist %MLU1%.unloaded goto refunction
-echo.
-echo The folder name you have entered doesn't exist in your server folder.
-pause
-cls
-goto unload
-:nef2
-echo.
-echo Error
-if %MLU2%==unload echo You already have an unloaded %MLU1% folder!
-if %MLU2%==load echo You already have a %MLU1% folder!
-pause
-goto unload
-:nef3
-echo.
-echo Error
-if %MLU2%==load echo The .unloaded
-echo %MLU1% does not exist in your folder!
-pause
-goto unload
-:qor
-echo.
-echo TYPE menu TO EXIT. TYPE unloader TO GO BACK TO THE UNLOADER.
-SET qorf=menu
-SET /P quor= //S6/MLU_FinishedJob: 
-if %quor%==menu goto debug
-if %quor%==unloader goto unload 
-goto qor
-REM ------------------------------------------------------------ END VARIABLE
-:confirmation
-echo.
-REM Unload Function Variable
-if %MLU2%==unload echo %MLU1% has been unloaded!
-if %MLU2%==unload echo %MLU1% has been renamed to %MLU1%.unloaded .
-if %MLU2%==unload echo You can MANUALLY load %MLU1% by deleting the .unloaded portion in its name,
-if %MLU2%==unload echo or you can use the load function in the map unloader.
-REM Load Function Variable
-if %MLU2%==load echo %MLU1% has been loaded!
-if %MLU2%==load echo %MLU1%.unloaded has been renamed to %MLU1% .
-goto qor
+echo SET UNLOADED= %UnloadedMap%
+if exist %settingsF% (
+echo Loading.
+(
+set /p JARFILE=
+set /p UnloadedMap=
+)<%SettingsF%
+)
+echo Load Complete. %Jarfile% %UnloadedMap%
+pause >nul
 REM ------------------------------------------------------------ MLU1 END
 REM ////////////////////////////////////////////////////////////
 REM ////////////////////////////////////////////////////////////
