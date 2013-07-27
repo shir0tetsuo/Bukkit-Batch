@@ -224,14 +224,14 @@ echo ///////////////////////////////////////BUKKIT!//////////
 echo /// %FVSShort% ///// NightDelSolEXE7 //////////////////////
 echo ________________________________________________________
 echo ________________________________________________________
-echo                      Main Menu
+echo                        Main Menu
 :invalid
 title [RUNBUKK7] - Start Menu
 echo ________________________________________________________
 echo ________________________________________________________
 echo /R///////////////////////////////////////////////C//////
 echo /U////       run        /// checkgb  options /////O/////
-echo /N//// loop    loop_afk ///     purgelogs    //////N////
+echo /N//// loop    loop_afk ///     purgelog     //////N////
 echo ////////////////////////////////////////////////////F///
 echo /R////    maploader     /// fullreset   help ////////I//
 echo /B///////////////////////// debug    debug.s /////////G/
@@ -271,16 +271,20 @@ REM ////////////////////////////////////////////////////////////
 REM //////////////////////////////////////////////////////////// TOOLS
 :logname
 cls
-if not exist server.log goto logname2  
-if exist server.log RENAME server.log server.log.old
-echo PURGELOG
+if not exist server.txt goto logname2
+RENAME "server.txt" "server2.txt"
+title [RUNBUKK7] - Purge Log
 echo.
-echo server.log renamed to server.log.old !
-echo The server log was renamed so that there are no lag conflicts.
-echo ///// Deleting it is recommended. /////
+echo PURGELOG 1.1
+echo.
+echo Your log was automagically renamed with a timecode.
+echo [%time%]server.txt
+echo.
+echo.
 echo It is recommended that you run this when your server log is larger
 echo                           than 512 KB.
 echo All for the benifits of latency! :)
+echo.
 pause
 cls
 goto debug
@@ -288,13 +292,14 @@ goto debug
 echo //// Error ////
 echo server.log doesn't exist in your folder.
 echo You haven't started the server up silly!
+echo.
 goto invalid
 :checkgb
 echo.
 echo You are currently using %GB% gigabytes.
 echo The default gigabyte usage is 2.
 echo Please type fullreset to display the gigabyte modifier
-echo if required.
+echo if required, or see GBUsage.txt and enter the integer.
 echo.
 goto invalid
 REM ////////////////////////////////////////////////////////////
@@ -318,20 +323,28 @@ REM ////////////////////////////////////////////////////////////
 REM ////////////////////////////////////////////////////////////
 REM                           OPTIONS
 REM              SSW = Options Read
+REM ////////////////////////////////////////////////////////////
+REM ///////////////// INCLUDES COLOR CODING ////////////////////
 :options
 title [RUNBUKK7] - Options
 cls
 echo BETA
 echo.
-echo //////////// SPLASH CONTROLLER /////
+echo //////////////// SPLASH CONTROLLER / 
 echo SkipSplash.True     SkipSplash.False
 echo.
 if exist %SkipFile% echo ///SkipSplash.True
 if not exist %SkipFile% echo ///SkipSplash.False
 echo.
-echo //////////// GO BACK TO MAIN MENU //
+echo ///////////// GO BACK TO MAIN MENU / 
 echo menu
 echo.
+echo //////////////// TEMPORARY   THEME /
+echo DESCRIPTION        CODE      FUNCTION
+echo Default          :: 0F ::    default
+echo Black and Gray   :: 70 ::    lunar
+echo Lime             :: A0 ::    lime
+echo Virus Red        :: 4C ::    virus
 echo.
 REM ////////////////////////////////////////////////////////////
 set SSW=err2
@@ -355,6 +368,23 @@ if %SSW%==err2 (
 goto SSWe
 )
 if %SSW%==menu goto reset1
+if %SSW%==lime (
+color A0
+goto SSWe
+)
+if %SSW%==lunar (
+color 70
+goto SSWe
+)
+if %SSW%==default (
+color 0F
+goto SSWe
+)
+if %SSW%==virus (
+color 4C
+goto SSWe
+)
+set SSW=err2
 echo.
 echo That is not a valid command.
 echo.
