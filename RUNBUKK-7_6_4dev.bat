@@ -271,14 +271,20 @@ REM ////////////////////////////////////////////////////////////
 REM //////////////////////////////////////////////////////////// TOOLS
 :logname
 cls
-if not exist server.txt goto logname2
-RENAME "server.txt" "server2.txt"
+if not exist server.log goto logname2
 title [RUNBUKK7] - Purge Log
 echo.
 echo PURGELOG 1.1
+del server.log
+if not exist server.log goto PLSuccess
 echo.
-echo Your log was automagically renamed with a timecode.
-echo [%time%]server.txt
+echo An error occured.
+echo.
+ping localhost -n 3 >nul
+goto debug
+:PLSuccess
+echo.
+echo The operation completed successfully.
 echo.
 echo.
 echo It is recommended that you run this when your server log is larger
@@ -477,7 +483,7 @@ echo debug.s
 echo           Runs the file over again skipping to the very beginning of the file,
 echo           rather than the menu.
 echo options
-echo         * This function is not yet available.
+echo.
 echo           Once enabled it will be used to store extra information about the
 echo           map loader utility (MLU) on the second and third settings.rbk lines.
 echo           (Line 2: Ejected Map. Line 3: 0/1; stating unloaded true/false.
