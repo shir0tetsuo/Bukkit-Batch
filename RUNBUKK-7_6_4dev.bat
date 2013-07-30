@@ -220,7 +220,7 @@ cls
 if not exist %jarfile% goto reset1
 cls
 echo ////////////////////////////////////////////////////////
-echo ///////////////////////////////////////BUKKIT!//////////
+echo /// All commands cap-sensitive! ///////BUKKIT!//////////
 echo /// %FVSShort% ///// NightDelSolEXE7 //////////////////////
 echo ________________________________________________________
 echo ________________________________________________________
@@ -270,7 +270,6 @@ REM ////////////////////////////////////////////////////////////
 REM ////////////////////////////////////////////////////////////
 REM //////////////////////////////////////////////////////////// TOOLS
 :logname
-REM Fixed issue shir0tetsuo/Zero#1
 cls
 if not exist server.log goto logname2
 title [RUNBUKK7] - Purge Log
@@ -338,13 +337,9 @@ cls
 echo BETA
 echo.
 echo //////////////// SPLASH CONTROLLER / 
-echo SkipSplash.True     SkipSplash.False
-echo.
+echo SkipSplash.True  ::  SkipSplash.False
 if exist %SkipFile% echo ///SkipSplash.True
 if not exist %SkipFile% echo ///SkipSplash.False
-echo.
-echo ///////////// GO BACK TO MAIN MENU / 
-echo menu
 echo.
 echo //////////////// TEMPORARY   THEME /
 echo DESCRIPTION        CODE      FUNCTION
@@ -352,6 +347,9 @@ echo Default          :: 0F ::    default
 echo Black and Gray   :: 70 ::    lunar
 echo Lime             :: A0 ::    lime
 echo Virus Red        :: 4C ::    virus
+echo.
+echo //////////////////////////// OTHER /
+echo menu             :: Goes to the main menu.
 echo.
 REM ////////////////////////////////////////////////////////////
 set SSW=err2
