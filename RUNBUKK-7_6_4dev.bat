@@ -350,6 +350,7 @@ echo Default          :: 0F ::    default
 echo Black and Gray   :: 70 ::    lunar
 echo Lime             :: A0 ::    lime
 echo Virus Red        :: 4C ::    virus
+echo Manual                       colorsel
 echo.
 echo //////////////////////////// OTHER /
 echo menu             :: Goes to the main menu.
@@ -392,11 +393,59 @@ if %SSW%==virus (
 color 4C
 goto SSWe
 )
+if %SSW%==colorsel goto custcol
 set SSW=err2
 echo.
 echo That is not a valid command.
 echo.
 goto SSWe
+:custcol
+cls
+echo.
+echo ////////////////////////////////////////////
+echo      Enter the color code manually.
+echo     Usage: 0F    or    3B    or    98
+echo       0 = Black    8 = Gray
+echo       1 = Blue     9 = Light Blue
+echo       2 = Green    A = Light Green
+echo       3 = Aqua     B = Light Aqua
+echo       4 = Red      C = Light Red
+echo       5 = Purple   D = Light Purple
+echo       6 = Yellow   E = Light Yellow
+echo       7 = White    F = Bright White
+echo.
+echo             menu    options
+echo.
+:coldeny
+SET mancol=x
+SET /P mancol=/%FVSShort%.MainMenu/Options/ManualColorcode# 
+if %mancol%==options goto options
+if %mancol%==menu goto reset1
+if %mancol%==x (
+echo.
+echo You have nothing input!
+echo.
+goto coldeny
+)
+echo.
+echo Your code is: %mancol%
+echo.
+echo Is the code you entered correct? [ y / n ]
+SET confirmcol=y
+SET /P confirmcol=/%FVSShort%.MainMenu/Options/ManualColorCode confirm$ 
+if %confirmcol%==y (
+color %mancol%
+echo.
+echo The scheme has been modified.
+echo.
+goto coldeny
+)
+if %confirmcol%==n (
+echo.
+echo The scheme was not loaded.
+echo.
+goto coldeny
+)
 REM ////////////////////////////////////////////////////////////
 REM ////////////////////////////////////////////////////////////
 REM //////////////////////////////////////////////////////////// END TOOLS
