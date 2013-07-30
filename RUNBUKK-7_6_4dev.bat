@@ -121,6 +121,7 @@ if exist %SkipFile% (
 color 0F
 goto reset1
 )
+:splash2
 title [RUNBUKK7]
 color 70
 cls
@@ -235,6 +236,7 @@ echo /N//// loop    loop_afk ///     purgelog     //////N////
 echo ////////////////////////////////////////////////////F///
 echo /R////    maploader     /// fullreset   help ////////I//
 echo /B///////////////////////// debug    debug.s /////////G/
+echo //////    viewsplash    ///    fullreset.x   ///////////
 echo /////////////////////////////////////// quit ///////////
 set runmenu=err
 set /p runmenu= /%FVSShort%.MainMenu/$ 
@@ -257,6 +259,7 @@ if %runmenu%==debug @echo on
 if %runmenu%==debug goto freset
 if %runmenu%==debug.s @echo on &goto db.s
 if %runmenu%==options goto options
+if %runmenu%==viewsplash goto splash2
 echo.
 echo %runmenu% is not an option or was typed incorrectly.
 echo You must enter one of the options displayed in lower case.
