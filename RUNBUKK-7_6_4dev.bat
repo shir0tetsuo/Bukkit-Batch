@@ -80,7 +80,7 @@ set /P jarfile=
 )<%settingsF%
 )
 REM if %runmenu%==debug.s ping localhost -n 3 >nul
-if exist GBUsage.txt goto LoadGBU
+if exist GBUsage.txt goto LoadSFILE
 :freset
 cls
 title Server Gigabyte Usage
@@ -582,11 +582,7 @@ REM ///////////// THIS IS WHERE RUNMENU OPTIONS ////////////////
 REM /////////////   ARE GOING TO BE AS WELL AS  ////////////////
 REM ////////////////// LOADER LINES ////////////////////////////
 
-REM :writecrash
-REM echo Bukkit crashed or exited at [%time%] >>crash.txt
-REM goto goback
-
-:LoadGBU
+:LoadSFILE
 (
 set /p GB=
 )<GBUsage.txt
