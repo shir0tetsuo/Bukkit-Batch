@@ -586,4 +586,5 @@ REM ////////////////// LOADER LINES ////////////////////////////
 (
 set /p GB=
 )<GBUsage.txt
+REM Settings.rbk pull here
 goto splash
