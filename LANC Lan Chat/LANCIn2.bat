@@ -164,8 +164,7 @@ echo.
 :coldeny
 SET mancol=x
 SET /P mancol=Code: 
-if %mancol%==options goto options
-if %mancol%==menu goto reset1
+if %mancol%==back goto rs1
 if %mancol%==x (
 echo.
 echo You have nothing input!
@@ -212,9 +211,11 @@ cls
 echo CloudReceive
 echo --- CH: %c% ----------------------------------------------
 type orom-c%c%.txt
+echo.
 if exist orom-m%c%.txt echo --- CH: %c% ----------------------------------------------
 if exist orom-m%c%.txt echo  MOTD:
 if exist orom-m%c%.txt type orom-m%c%.txt
+if exist orom-m%c%.txt echo.
 if exist orom-m%c%.txt echo ----------------------------------------------------------
 PING 1.1.1.1 -n 1 -w %lag% >NUL
 goto A
