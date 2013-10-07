@@ -36,6 +36,7 @@ echo.
 echo         Case Sensitive
 echo               1- ---------------
 echo                   Color
+echo                   Help
 echo               2- ---------------
 if exist LANCX.txt echo                   Login
 echo               3- ---------------
@@ -47,8 +48,8 @@ set CVCr=er
 set /p CVCr=$ 
 if %CVCr%==er goto rs1 
 if %CVCr%==Color goto colormod
-REM if %CVCr%==Help goto H
-REM if %CVCr%==Login goto runsetname
+if %CVCr%==Help goto H
+if %CVCr%==Login goto runsetname
 if %CVCr%==Configure start LANCIn2.bat
 REM Put EXE when 1.1.40
 REM if %CVCr%==Receive start CloudReceive.bat&goto rs1
@@ -143,3 +144,53 @@ echo Type back to go back.
 echo.
 goto coldeny
 )
+
+:H
+cls
+echo Made by Ryan Davis 2013.
+echo LANCX server must be specified in loc.dat .
+echo You need LANCIn2.bat to properly configure.
+echo It's pretty easy to understand and stuff!
+echo You are welcome sir
+pause
+goto rs1
+
+:runsetname
+cls
+set u=Guest
+set /p u=Username: 
+echo Channel needs to be set.
+ping localhost -n 3 >nul
+cls
+type avsrvr.dat
+set c=0
+set /p c=Set Channel: 
+if not exist orom-c%c%.txt goto redo 
+goto chatbox
+
+:redo
+echo An error occured. The chatroom may not exist.
+pause
+goto runsetname
+
+:chatbox 
+REM set /p c=Chatlog path (end it in .txt):
+set time=&time /t
+if %noch2%==1 goto CHLo
+echo [%build%][%time%] %u% Signed In. >> orom-c%c%.txt
+
+:CHLo
+cls
+echo CloudVoice - %u%
+echo --- CH: %c% -----------------------------------------------
+type orom-c%c%.txt
+echo --- CH: %c% -----------------------------------------------
+if exist orom-m%c%.txt echo  MOTD:
+if exist orom-m%c%.txt type orom-m%c%.txt
+if exist orom-m%c%.txt echo.
+if exist orom-m%c%.txt echo ----------------------------------------------------------
+
+echo.
+set /p m=Message: 
+echo [%time%] %u%: %m% >> orom-c%c%.txt
+goto CHLo
