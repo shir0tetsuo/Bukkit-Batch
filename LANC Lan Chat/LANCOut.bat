@@ -20,6 +20,7 @@ set /P location=
 if exist %locf% echo [!] R/W ...
 cd %location%
 if not exist LANCX.txt echo [!] E:404 LANCX Server Path Not Found
+if not exist LANCX.txt echo [:] Use pushload to load a UNC location from %locf% .
 if not exist LANCX.txt ping localhost -n 5 >nul
 REM /////////////////////////////////////////////////////////////////////
 REM /////////////////////////////////////////////////////////////////////
@@ -39,6 +40,8 @@ echo                   Color
 echo                   Help
 echo               2- ---------------
 if exist LANCX.txt echo                   Login
+if exist %locf% echo                   pushd
+if exist %locf% echo                   pushload
 echo               3- ---------------
 if not exist LANCX.txt echo               [!] Configure
 if %noch2%==0 echo                   SilentLogin
@@ -51,6 +54,8 @@ if %CVCr%==Color goto colormod
 if %CVCr%==Help goto H
 if %CVCr%==Login goto runsetname
 if %CVCr%==Configure start LANCIn2.bat
+if %CVCr%==pushd goto push
+if %CVCr%==pushload goto pushloader
 REM Put EXE when 1.1.40
 REM if %CVCr%==Receive start CloudReceive.bat&goto rs1
 REM if %CVCr%==OromUtil start CloudWrite.bat&goto rs1
@@ -166,6 +171,9 @@ type avsrvr.dat
 set c=0
 set /p c=Set Channel: 
 if not exist orom-c%c%.txt goto redo 
+
+if exist orom-x%c%.txt set pass=0&goto enc1
+
 goto chatbox
 
 :redo
@@ -181,16 +189,63 @@ echo [%build%][%time%] %u% Signed In. >> orom-c%c%.txt
 
 :CHLo
 cls
-echo CloudVoice - %u%
+echo Sending - %u%
 echo --- CH: %c% -----------------------------------------------
 type orom-c%c%.txt
 echo --- CH: %c% -----------------------------------------------
 if exist orom-m%c%.txt echo  MOTD:
 if exist orom-m%c%.txt type orom-m%c%.txt
 if exist orom-m%c%.txt echo.
-if exist orom-m%c%.txt echo ----------------------------------------------------------
+if exist orom-m%c%.txt echo -----------------------------------------------
 
 echo.
 set /p m=Message: 
 echo [%time%] %u%: %m% >> orom-c%c%.txt
 goto CHLo
+
+:enc1
+cls
+echo This chatroom has a password!
+if %noch2%==1 echo [!] SilentLogin was disabled.
+echo.
+set noch2=0
+echo [!] R/W ...
+if exist orom-x%c%.txt (
+set /P pass=
+)<orom-x%c%.txt
+echo [!] 
+set pass2=1
+set /P pass2=PW: 
+if %pass2%==%pass% (
+echo Success!
+echo %pass2% == %pass%
+echo.
+echo You will be logged in shortly.
+ping localhost -n 5 >nul
+goto chatbox
+)
+goto enc1
+
+
+:push
+set ipush=0
+echo [:] The %locf% will be ignored.
+set /P ipush=Enter Pushed Drive Path: 
+if %ipush%==0 goto push
+echo [!] pushd %ipush% ...
+pushd %ipush%
+echo [!] R/W ...
+ping localhost -n 2 >nul
+goto rs1
+
+:pushloader
+echo [!] R/W ...
+echo [!!] R/W %locf%
+if exist %locf% (
+set /P location=
+)<%locf%
+pushd %location%
+if exist LANCX.txt echo Server Found!
+if not exist LANCX.txt echo E:404
+ping localhost -n 2 >nul
+goto rs1

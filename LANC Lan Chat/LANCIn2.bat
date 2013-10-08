@@ -54,7 +54,9 @@ echo.
 echo         Case Sensitive
 echo               1- --------- RUN -
 if exist LANCX.txt echo                   Login
-if exist loc.dat echo                   Load
+if exist %locf% echo                   Load
+if exist %locf% echo                   pushd
+if exist %locf% echo                   pushload
 if exist LANCX.txt echo                   colconfig
 if exist LANCOut.bat echo                   LANCOut
 if not exist LANCX.txt echo               2- ------ CONFIG -
@@ -74,8 +76,10 @@ if %i0%==configure goto Configure
 if %i0%==colconfig goto colconfig
 if %i0%==Login goto skpdc
 if %i0%==login goto skpdc
+if %i0%==pushd goto push
 if %i0%==load goto loadloc
 if %i0%==Load goto loadloc
+if %i0%==pushload goto pushloader
 if %i0%==LANCOut ( 
 if exist LANCOut.bat start LANCOut.bat
 goto rsl
@@ -93,6 +97,7 @@ REM Loc
 :Configure
 cls
 echo Set the full path of the LANCX folder.
+echo If a 404 / warn is returned, try pushload or pushd.
 set noch=1
 set /P location=
 if not exist loc.dat (
@@ -200,25 +205,51 @@ echo The path you have specified is not a valid server folder.
 ping localhost -n 3 >nul
 goto rs1
 )
+
 type avsrvr.dat
 set c=1
 set /p c=Set Channel: 
 if not exist orom-c%c%.txt goto redo 
 set lag=800
 set /p lag=Refresh lag in miliseconds (def 800 always above 500): 
+
+if exist orom-x%c%.txt set pass=0&goto enc1
+
 :A
 cls
-echo CloudReceive
+echo Receiving
 echo --- CH: %c% ----------------------------------------------
 type orom-c%c%.txt
 echo.
-if exist orom-m%c%.txt echo --- CH: %c% ----------------------------------------------
+echo --- CH: %c% ----------------------------------------------
 if exist orom-m%c%.txt echo  MOTD:
 if exist orom-m%c%.txt type orom-m%c%.txt
 if exist orom-m%c%.txt echo.
-if exist orom-m%c%.txt echo ----------------------------------------------------------
+if exist orom-m%c%.txt echo --------------------------------------------------------
 PING 1.1.1.1 -n 1 -w %lag% >NUL
 goto A
+
+:enc1
+cls
+echo This chatroom has a password!
+echo.
+REM set noch2=0
+echo [!] R/W ...
+if exist orom-x%c%.txt (
+set /P pass=
+)<orom-x%c%.txt
+echo [!] 
+set pass2=1
+set /P pass2=PW: 
+if %pass2%==%pass% (
+echo Success!
+echo %pass2% == %pass%
+echo.
+echo You will be logged in shortly.
+ping localhost -n 5 >nul
+goto A
+)
+goto enc1
 
 :firstrunm
 echo                   This is the Local Area Network Chat: Interface, 2.0.
@@ -244,6 +275,29 @@ set /P location=
 )<%locf%
 cd %location%
 if exist LANCX.txt echo "%location%" loaded.
-if not exist LANCX.txt echo "%location%" was loaded, but the path cannot be used.
+if not exist LANCX.txt echo "%location%" was loaded, but the path cannot be used. Did you try pushd?
 ping localhost -n 5 >nul
+goto rs1
+
+:push
+set ipush=0
+echo [:] The %locf% will be ignored.
+set /P ipush=Enter Pushed Drive Path: 
+if %ipush%==0 goto push
+echo [!] pushd %ipush% ...
+pushd %ipush%
+echo [!] R/W ...
+ping localhost -n 2 >nul
+goto rs1
+
+:pushloader
+echo [!] R/W ...
+echo [!!] R/W %locf%
+if exist %locf% (
+set /P location=
+)<%locf%
+pushd %location%
+if exist LANCX.txt echo Server Found!
+if not exist LANCX.txt echo E:404
+ping localhost -n 2 >nul
 goto rs1
