@@ -7,6 +7,8 @@ title LANCOut2
 color 0b
 set noch=0
 set noch2=0
+set noch3=0
+set adminpermissions=0
 echo Hello!
 echo [!] R/W ...
 if not exist %locf% echo [!] loc.dat missing. Please run the configuration in LANCIn2.bat.
@@ -46,6 +48,8 @@ echo               3- ---------------
 if not exist LANCX.txt echo               [!] Configure
 if %noch2%==0 echo                   SilentLogin
 if %noch2%==1 echo              [ON] SilentLogin
+if %noch3%==0 echo                   console
+if %noch3%==1 echo              [ON] console
 echo.
 set CVCr=er
 set /p CVCr=$ 
@@ -53,9 +57,11 @@ if %CVCr%==er goto rs1
 if %CVCr%==Color goto colormod
 if %CVCr%==Help goto H
 if %CVCr%==Login goto runsetname
+if %CVCr%==login goto runsetname
 if %CVCr%==Configure start LANCIn2.bat
 if %CVCr%==pushd goto push
 if %CVCr%==pushload goto pushloader
+if %CVCr%==console set noch3=1&goto rs1
 REM Put EXE when 1.1.40
 REM if %CVCr%==Receive start CloudReceive.bat&goto rs1
 REM if %CVCr%==OromUtil start CloudWrite.bat&goto rs1
@@ -185,7 +191,8 @@ goto runsetname
 REM set /p c=Chatlog path (end it in .txt):
 set time=&time /t
 if %noch2%==1 goto CHLo
-echo [%build%][%time%] %u% Signed In. >> orom-c%c%.txt
+if %noch3%==0 echo [!][%time%] %u% Signed In. >> orom-c%c%.txt
+if %noch3%==1 echo [!][CU][%time%] %u% Signed in as a console user. >> orom-c%c%.txt
 
 :CHLo
 cls
@@ -200,8 +207,144 @@ if exist orom-m%c%.txt echo -----------------------------------------------
 
 echo.
 set /p m=Message: 
-echo [%time%] %u%: %m% >> orom-c%c%.txt
+REM Main Message
+if %noch3%==0 echo [%time%] %u%: %m% >> orom-c%c%.txt
+if %adminpermissions%==1 (
+echo [A][%time%] %u%: %m% >> orom-c%c%.txt
+goto solcom
+)
+if %noch3%==1 echo [CU][%time%] %u%: %m% >> orom-c%c%.txt
+
+if %noch3%==1 goto solcom
+
+echo [:] Anti-Flood
+ping localhost -n 2 >nul
 goto CHLo
+
+:solcom
+
+if %noch3%==1 set sol=0
+set /p sol=Console: 
+
+REM ! commands
+REM ///////////////////////////////////////////////////////////////////////////
+echo [CU] Checking Command..
+if %sol%==!waffles (
+echo [!][%time%] %u% ate a bunch of waffles. >> orom-c%c%.txt
+goto CHLo
+)
+if %sol%==!quit (
+echo [%time%] %u% Logged Off. >> orom-c%c%.txt
+ping localhost -n 2 >nul
+goto rs1
+)
+if %sol%==!exit (
+echo [%time%] %u% Logged Off. >> orom-c%c%.txt
+ping localhost -n 2 >nul
+Goodbye.
+ping localhost -n 2 >nul
+exit
+)
+
+if %sol%==!help (
+echo !waffles
+echo !fish
+echo !list: Displays channel list
+echo !help: Displays help
+echo !ch: Switches channel
+echo !quit: Goes to main menu
+echo !exit: Exits the application
+echo !disable: Disables Console User till next restart
+echo !changeusr: Changes your username.
+if exist admin.txt echo !admin: Login to use admin permissions.
+if %adminpermissions%==1 echo.
+if %adminpermissions%==1 echo !reset: Reset the chatroom and export to a log.
+pause
+goto CHLo
+)
+
+if %sol%==!admin goto enc2
+
+if %sol%==!changeusr goto changeusrn
+
+if %sol%==!disable (
+set noch3=0
+echo [!CU] Console Usage Disabled.
+ping localhost -n 4 >nul
+goto CHLo
+)
+
+if %sol%==!list (
+echo.
+type avsrvr.dat
+echo.
+echo.
+echo [:] To switch channels, do !ch
+pause
+goto CHLo
+)
+
+if %sol%==!fish goto slap
+
+REM Channel Switching
+if %sol%==!ch (
+echo.
+set c2=0
+set /P c2=Channel: 
+echo [!] R/W ...
+)
+if %sol%==!ch (
+ping localhost -n 2 >nul
+echo [!] %c% --- to --- %c2%
+ping localhost -n 2 >nul
+if not exist orom-c%c2%.txt (
+echo Non-Existent Channel.
+ping localhost -n 3 >nul
+goto CHLo
+)
+
+echo [%time%] %u% switched to channel %c2%. >> orom-c%c%.txt
+set c=%c2%
+if exist orom-x%c2%.txt goto enc1
+goto chatbox
+)
+
+REM ///////////////////////////////////////////////////////////////////////////
+
+if %adminpermissions%==1 goto adminsub
+
+REM Channel Switching End
+ping localhost -n 2 >nul
+goto CHLo
+
+REM ///////////////////////////////////////////////////////////////////////////
+
+:adminsub
+echo [A] Checking Admin Subroutine...
+if %sol%==!reset (
+echo [!] R/W ...
+ren orom-c%c%.txt orom-L%c%--%time:~0,2%%time:~3,2%-%DATE:/=%.txt
+echo [!] Channel %c% was exported on %time:~0,2%%time:~3,2%-%DATE:/=%.
+echo [!!] An admin has reset this chatroom. > orom-c%c%.txt
+pause
+goto CHLo
+)
+
+ping localhost -n 2 >nul
+goto CHLo
+
+
+REM ///////////////////////////////////////////////////////////////////////////
+REM Extra Command References
+
+:slap
+set slapee=Another Fish
+set /P slapee=Who do you want to slap? 
+if %adminpermissions%==0 echo [!][%time%] %u% slapped %slapee% with A Smelly Fish. >> orom-c%c%.txt
+if %adminpermissions%==1 echo [!][%time%] Admin %u% slapped %slapee% with A Dank Fishstick. >> orom-c%c%.txt
+goto CHLo
+
+REM ///////////////////////////////////////////////////////////////////////////
 
 :enc1
 cls
@@ -217,8 +360,7 @@ echo [!]
 set pass2=1
 set /P pass2=PW: 
 if %pass2%==%pass% (
-echo Success!
-echo %pass2% == %pass%
+echo %pass2% --- %pass% -- Password Correct!
 echo.
 echo You will be logged in shortly.
 ping localhost -n 5 >nul
@@ -226,6 +368,25 @@ goto chatbox
 )
 goto enc1
 
+:enc2
+if not exist admin.txt echo [!] No admin permissions available.
+if not exist admin.txt ping localhost -n 3 >nul
+if not exist admin.txt goto CHLo
+echo [!] R/W ...
+set admp=nul
+if exist admin.txt (
+set /P admpr=
+)<admin.txt
+set /P admp=Pass: 
+if %admp%==%admpr% (
+echo [!] %admp% --- %admpr% -- Password Correct!
+ping localhost -n 3 >nul
+set adminpermissions=1
+goto CHLo
+) ELSE (
+echo [!] Incorrect Password!
+goto enc2
+)
 
 :push
 set ipush=0
@@ -249,3 +410,11 @@ if exist LANCX.txt echo Server Found!
 if not exist LANCX.txt echo E:404
 ping localhost -n 2 >nul
 goto rs1
+
+REM Extra Console Bit
+:changeusrn
+set /P u2=Username: 
+if %adminpermissions%==1 echo [!][A][%time%] %u% changed their username to %u2%. >> orom-c%c%.txt
+if %adminpermissions%==0 echo [!][CU][%time%] %u% changed their username to %u2%. >> orom-c%c%.txt
+set u=%u2%
+goto CHLo

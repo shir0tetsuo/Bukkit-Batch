@@ -27,9 +27,7 @@ set build=%X%
 echo A server exists in this location >"LANCX.txt
 
 echo BUILD: %build% >> avsrvr.dat
-echo No build sides are available >> avsrvr.dat
 echo. >> avsrvr.dat
-echo USE NUMBER IN BRACKET AS CHANNEL >> avsrvr.dat
 echo ---------------------------- >> avsrvr.dat
 :create
 echo Enter an integer for the orom you wish to create. These are the chatrooms.
@@ -47,19 +45,28 @@ goto Create
 
 :Next
 cls
-echo Add Descriptions!
+echo Add Descriptions and Admin Passwords!
 echo oromnumber followed by description.
 echo Next is still the way out.
 echo Requires description.
 echo Type Next as oromnu to continue.
 set oromnu=0
 set /p oromnu=oromnu: 
-if %oromnu%==Next goto Eol
+if %oromnu%==Next goto Adm
 set string=Public
 set /p string=descr: 
 if not exist orom-c%oromnu%.txt goto Er
 echo     Channel %oromnu%: %string% >> avsrvr.dat
 goto Next
+
+:Adm
+cls
+echo Add an admin password. Leave blank for none.
+set admp=0
+set /P admp=Admin: 
+if %admp%==0 goto Eol
+echo %admp% > admin.txt
+goto Eol
 
 :Er
 echo Oops! something went wrong.
