@@ -257,7 +257,7 @@ echo !exit: Exits the application
 echo !disable: Disables Console User till next restart
 echo !changeusr: Changes your username.
 if exist admin.txt echo !admin: Login to use admin permissions.
-if %adminpermissions%==1 echo.
+if %adminpermissions%==1 echo [A] List of Admin Commands
 if %adminpermissions%==1 echo !reset: Reset the chatroom and export to a log.
 pause
 goto CHLo
