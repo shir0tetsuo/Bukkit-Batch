@@ -1,6 +1,7 @@
 REM ---------------------------------------------
 REM Start of File
 @echo off
+set ver=2.1.1.0
 set location=0
 set locf=loc.dat
 title LANCOut2
@@ -258,7 +259,9 @@ echo !disable: Disables Console User till next restart
 echo !changeusr: Changes your username.
 if exist admin.txt echo !admin: Login to use admin permissions.
 if %adminpermissions%==1 echo [A] List of Admin Commands
+if %adminpermissions%==1 echo !v: Check build version.
 if %adminpermissions%==1 echo !reset: Reset the chatroom and export to a log.
+if %adminpermissions%==1 echo !ban: Ban a user by IP or computer name.
 pause
 goto CHLo
 )
@@ -328,6 +331,10 @@ echo [!] Channel %c% was exported on %time:~0,2%%time:~3,2%-%DATE:/=%.
 echo [!!] An admin has reset this chatroom. > orom-c%c%.txt
 pause
 goto CHLo
+)
+
+if %sol%==!v (
+echo %ver%
 )
 
 ping localhost -n 2 >nul
