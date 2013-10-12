@@ -1,6 +1,6 @@
+@echo off
 REM ---------------------------------------------
 REM Start of File
-@echo off
 set location=0
 set locf=loc.dat
 title LANCOut2
@@ -250,6 +250,7 @@ exit
 if %sol%==!help (
 echo !waffles
 echo !fish
+echo !pizza
 echo !list: Displays channel list
 echo !help: Displays help
 echo !ch: Switches channel
@@ -261,8 +262,17 @@ if exist admin.txt echo !admin: Login to use admin permissions.
 if %adminpermissions%==1 echo [A] List of Admin Commands
 if %adminpermissions%==1 echo !v: Check build version.
 if %adminpermissions%==1 echo !reset: Reset the chatroom and export to a log.
-if %adminpermissions%==1 echo !ban: Ban a user by IP or computer name.
 pause
+goto CHLo
+)
+
+if %sol%==!pizza (
+echo [!][%time%] %u% said we should get pizza. >> orom-c%c%.txt
+goto CHLo
+)
+
+if %sol%==!penis (
+echo [!][%time%] %u% slapped you in the face with a big floppy green penis saying "HULK SMASH!" >> orom-c%c%.txt
 goto CHLo
 )
 
