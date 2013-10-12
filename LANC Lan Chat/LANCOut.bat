@@ -1,7 +1,6 @@
 REM ---------------------------------------------
 REM Start of File
 @echo off
-set ver=2.1.1.0
 set location=0
 set locf=loc.dat
 title LANCOut2
@@ -9,6 +8,7 @@ color 0b
 set noch=0
 set noch2=0
 set noch3=0
+set ver=2.1.1.0
 set adminpermissions=0
 echo Hello!
 echo [!] R/W ...
