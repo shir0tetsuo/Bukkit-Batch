@@ -5,29 +5,25 @@ Making a LANCX Server
 ------
 Run the LANCChannelMaker and follow the instructions.
 Copy the LANCX folder to the desired (server) path.
+If the LANCX folder is going to be put onto a UNC path, do not type in the path of the server.
 
-Getting Started
-------
-
-The LANC kit is simple to use.
-Clone the LANC folder to your computer.
-
-Open the **LANCIn2.bat** program.
-Follow the instructions on screen, or skip them and press enter.
-Run the Configure tool.
-Enter the full path of the LANCX folder.
-If the LANCX folder is in a UNC location, ignore the 404 messages and run pushload.
-To specify a temporary UNC location, run pushd. The full LANCX location must be specified.
-
-Once you've found the LANCX server, the warnings will disappear.
+LANCX Folders
+-------------
 
     If the LANCX server is in a non-UNC location, for example dropbox, type Load to quickly load the location data.
     If the LANCX server is in a UNC location, run pushload.
 
-Once the loc.dat file has been created, you will be able to quickly load the configuration according to location.
+Breakdown of the LANCX Folder;
 
-Follow the instructions on screen after loading. Note that the login function will be disabled until the LANCX server is detected.
-
+    admin.txt             | This file contains the admin password.
+	avsrvr.dat            | This file contains the master list of defined channels.
+	LANCX.txt             | Maintains keep-alive.
+	orom-a                | To-Admin Messages.
+	orom-c                | Chat Channel Logs
+	orom-m                | Channel MOTD
+	orom-aL               | Discarded To-Admin Messages
+	orom-L                | Discarded Chat Channel Logs
+	
 Encrypting Chats
 ------
 

@@ -8,7 +8,8 @@ color 0b
 set noch=0
 set noch2=0
 set noch3=0
-set ver=2.1.1.0
+set viewmode=0
+set ver=2.2.1.0
 set adminpermissions=0
 echo Hello!
 echo [!] R/W ...
@@ -205,7 +206,9 @@ if exist orom-m%c%.txt echo  MOTD:
 if exist orom-m%c%.txt type orom-m%c%.txt
 if exist orom-m%c%.txt echo.
 if exist orom-m%c%.txt echo -----------------------------------------------
-
+if %viewmode%==1 echo --------- Admin Oh Admin! Please Read! --------
+if %viewmode%==1 type orom-a%c%.txt
+if %viewmode%==1 echo -----------------------------------------------
 echo.
 set /p m=Message: 
 REM Main Message
@@ -248,6 +251,7 @@ exit
 )
 
 if %sol%==!help (
+if %adminpermissions%==0 echo !telladmin
 echo !waffles
 echo !fish
 echo !pizza
@@ -262,6 +266,9 @@ if exist admin.txt echo !admin: Login to use admin permissions.
 if %adminpermissions%==1 echo [A] List of Admin Commands
 if %adminpermissions%==1 echo !v: Check build version.
 if %adminpermissions%==1 echo !reset: Reset the chatroom and export to a log.
+if %adminpermissions%==1 echo !
+if %adminpermissions%==1 echo !viewmode: See complaints.
+if %viewmode%==1 echo !clear: Clear complaints.
 pause
 goto CHLo
 )
@@ -270,6 +277,8 @@ if %sol%==!pizza (
 echo [!][%time%] %u% said we should get pizza. >> orom-c%c%.txt
 goto CHLo
 )
+
+if %sol%==!telladmin goto rexa
 
 if %sol%==!penis (
 echo [!][%time%] %u% slapped you in the face with a big floppy green penis saying "HULK SMASH!" >> orom-c%c%.txt
@@ -334,6 +343,7 @@ REM ///////////////////////////////////////////////////////////////////////////
 
 :adminsub
 echo [A] Checking Admin Subroutine...
+
 if %sol%==!reset (
 echo [!] R/W ...
 ren orom-c%c%.txt orom-L%c%--%time:~0,2%%time:~3,2%-%DATE:/=%.txt
@@ -345,6 +355,20 @@ goto CHLo
 
 if %sol%==!v (
 echo %ver%
+)
+
+if %sol%==! goto rex
+
+if %sol%==!viewmode (
+set viewmode=1
+)
+
+if %sol%==!clear (
+echo [!] R/W ...
+ren orom-a%c%.txt orom-aL%c%--%time:~0,2%%time:~3,2%-%DATE:/=%.txt
+echo [!] Channel %c% Admin Notices were exported on %time:~0,2%%time:~3,2%-%DATE:/=%.
+pause
+goto CHLo
 )
 
 ping localhost -n 2 >nul
@@ -434,4 +458,22 @@ set /P u2=Username:
 if %adminpermissions%==1 echo [!][A][%time%] %u% changed their username to %u2%. >> orom-c%c%.txt
 if %adminpermissions%==0 echo [!][CU][%time%] %u% changed their username to %u2%. >> orom-c%c%.txt
 set u=%u2%
+goto CHLo
+
+:rex
+cls
+set mastersymbol=
+set /P mastersymbol=!!! 
+echo ---[%time%]---------- Priority Message from Admin [!!!] >> orom-c%c%.txt
+echo %mastersymbol% >> orom-c%c%.txt
+echo ---[%time%]--- EOL ---------- [A] %u% -------- >> orom-c%c%.txt
+goto CHLo
+
+:rexa
+cls
+set mastersymbol2=
+set /P mastersymbol2=Yes? :: 
+echo ---[%time%]--- To Admin --- %mastersymbol2% ------- By %u% >> orom-a%c%.txt
+echo I'll see this message the next time I log in.
+ping localhost -n 5 >nul
 goto CHLo
