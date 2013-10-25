@@ -3,7 +3,10 @@ color 0e
 set fsr=0
 set location=0
 set locf=loc.dat
+set freedom=0
+set bug=0
 set noch=2
+set adminpermissions=0
 echo [!] ::: Noch = %noch% (Load Static) :::
 title LANCIn2: Interface
 echo                                          [!] LANCIn2 Start!
@@ -38,10 +41,13 @@ if %noch%==1 echo [!] ::: Noch = %noch% :::
 if %noch%==1 echo [:] Welcome!
 if exist loc.dat echo [:] A location save was discovered. 
 if exist loc.dat echo     To quickly load the location last saved, type load at the menu.
-if not exist LANCX.txt echo [!!] WARN  The specified path does not contain a LANCX server.
-:skipwarn
+if not exist LANCX.txt (
+echo [!!] WARN  The specified path does not contain a LANCX server.
 echo.
-pause
+ping localhost -n 3 >nul
+echo Trying push...
+goto loadloc
+)
 goto rs1
 
 :rs1
@@ -54,14 +60,20 @@ echo.
 echo         Case Sensitive
 echo               1- --------- RUN -
 if exist LANCX.txt echo                   Login
-if exist %locf% echo                   Load
-if exist %locf% echo                   pushd
-if exist %locf% echo                   pushload
+if exist %locf% echo               [!] Load
+if exist PM_*.log echo                   PM
+if not exist LANCX.txt echo                   pushd
 if exist LANCX.txt echo                   colconfig
 if exist LANCOut.bat echo                   LANCOut
+if exist admin.txt echo                   adminmode
+if %bug%==1 (
+echo               2- ------ CONFIG -
+echo             [BUG] Config
+)
+if %bug%==0 (
 if not exist LANCX.txt echo               2- ------ CONFIG -
-if not exist LANCX.txt echo               [:] Configure
-
+if not exist LANCX.txt echo             [404] Config
+)
 echo.
 echo             Restart the LANCIn2.bat file if you would like
 echo             A. A different channel
@@ -71,15 +83,17 @@ set i0=0
 :rsl
 set /P i0=$ 
 if %i0%==0 goto rsl
-if %i0%==Configure goto Configure
-if %i0%==configure goto Configure
+if %i0%==Config goto Configure
+if %i0%==config goto Configure
 if %i0%==colconfig goto colconfig
 if %i0%==Login goto skpdc
 if %i0%==login goto skpdc
 if %i0%==pushd goto push
 if %i0%==load goto loadloc
 if %i0%==Load goto loadloc
-if %i0%==pushload goto pushloader
+if %i0%==adminmode goto enc2
+if %i0%==PM goto psys
+if %i0%==pm goto psys
 if %i0%==LANCOut ( 
 if exist LANCOut.bat start LANCOut.bat
 goto rsl
@@ -226,6 +240,9 @@ if exist orom-m%c%.txt echo  MOTD:
 if exist orom-m%c%.txt type orom-m%c%.txt
 if exist orom-m%c%.txt echo.
 if exist orom-m%c%.txt echo --------------------------------------------------------
+if %adminpermissions%==1 echo --------- Admin Oh Admin! Please Read! --------
+if %adminpermissions%==1 type orom-a%c%.txt
+if %adminpermissions%==1 echo -----------------------------------------------
 PING 1.1.1.1 -n 1 -w %lag% >NUL
 goto A
 
@@ -275,7 +292,17 @@ set /P location=
 )<%locf%
 cd %location%
 if exist LANCX.txt echo "%location%" loaded.
-if not exist LANCX.txt echo "%location%" was loaded, but the path cannot be used. Did you try pushd?
+if not exist LANCX.txt (
+echo Checking push...
+pushd %location%
+)
+if not exist LANCX.txt (
+echo E:404 The location cannot be used.
+set bug=1
+) ELSE (
+echo The server was found.
+set bug=0
+)
 ping localhost -n 5 >nul
 goto rs1
 
@@ -290,14 +317,105 @@ echo [!] R/W ...
 ping localhost -n 2 >nul
 goto rs1
 
-:pushloader
+:enc2
+if not exist admin.txt echo [!] No admin permissions available.
+if not exist admin.txt ping localhost -n 3 >nul
+if not exist admin.txt goto rs1
 echo [!] R/W ...
-echo [!!] R/W %locf%
-if exist %locf% (
-set /P location=
-)<%locf%
-pushd %location%
-if exist LANCX.txt echo Server Found!
-if not exist LANCX.txt echo E:404
-ping localhost -n 2 >nul
+set admp=nul
+if exist admin.txt (
+set /P admpr=
+)<admin.txt
+set /P admp=Pass: 
+if %admp%==%admpr% (
+echo [!] %admp% --- %admpr% -- Password Correct!
+ping localhost -n 3 >nul
+set adminpermissions=1
+goto skpdc
+) ELSE (
+echo [!] Incorrect Password!
+goto enc2
+)
+
+:enc2
+if not exist admin.txt echo [!] No admin permissions available.
+if not exist admin.txt ping localhost -n 3 >nul
+if not exist admin.txt goto rs1
+echo [!] R/W ...
+if exist admin.txt (
+set /P afile=
+)<admin.txt
+cls
+echo Please type in the admin password.
+set /P acon=
+if %acon%==%afile% (
+echo Correct. %acon% --- %afile%
+pause
+set adminpermissions=1
 goto rs1
+)
+goto enc2
+
+:psys
+cls
+set un1=nul
+set /P un1=Username: 
+set upass=nul
+set /P upass=Password: 
+if exist REG_%un1%.usr (
+set /P upull=
+set /P modx=
+)<REG_%un1%.usr
+set cop=0
+if %modx%==1 (
+echo Welcome Back, Moderator %un1%!
+ping localhost -n 2 >nul
+set /P cop=Listen to Channel: 
+goto conx0
+)
+:conx1
+if not exist REG_%un1%.usr (
+echo No such user exists on this server!
+ping localhost -n 3 >nul
+goto rs1
+)
+if %upull%==%upass% (
+echo Logging In.
+ping localhost -n 3 >nul
+) ELSE (
+echo Incorrect Password!
+ping localhost -n 3 >nul
+goto psys
+)
+:: Part II
+:pii
+if not exist PM_%un1%.log (
+echo 404: Try back later!
+ping localhost -n 3 >nul
+goto rs1
+)
+if exist PM_%un1%.log (
+cls
+if %freedom%==1 (
+echo                     -------CHAT
+type orom-c%cop%.txt
+echo                     -------MOTD
+type orom-m%cop%.txt
+echo                     -------ADMN
+type orom-a%cop%.txt
+)
+echo ===================================================================
+type PM_%un1%.log
+if %freedom%==1 echo ---USING CHANNEL %cop%
+ping 1.1.1.1 -n 1 -w 3500 >nul
+)
+goto pii
+
+:conx0
+if %cop%==0 (
+goto conx1
+) ELSE (
+set freedom=1
+pause
+)
+goto conx1

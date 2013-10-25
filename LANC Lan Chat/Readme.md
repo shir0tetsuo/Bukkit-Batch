@@ -23,6 +23,11 @@ Breakdown of the LANCX Folder;
 	orom-m                | Channel MOTD
 	orom-aL               | Discarded To-Admin Messages
 	orom-L                | Discarded Chat Channel Logs
+	BAN_      .usr        | Banned Username.
+	REG_      .usr        | A Registered User's Key File.
+	                      | If the second line = 1, the user has moderator permissions.
+	KCK_      .tmp        | An If-Exist Kick & Delete File.
+    PM_       .log        | Private Messages.
 	
 Encrypting Chats
 ------

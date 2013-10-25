@@ -6,26 +6,43 @@ set locf=loc.dat
 title LANCOut2
 color 0b
 set noch=0
+set userk=nulx
+set user1k=nul
 set noch2=0
 set noch3=0
+set nochx=0
+set xmod=0
 set viewmode=0
-set ver=2.2.1.0
+set ver=2.5.8.1
+set ver2=Expanded Console Build
 set adminpermissions=0
 echo Hello!
-echo [!] R/W ...
+echo v%ver% %ver2%
+ping localhost -n 3 >nul
+echo Commencing Loading Sequence ...
+ping localhost -n 1 >nul
+echo [!][1/4] R/W Searching for %locf%...
 if not exist %locf% echo [!] loc.dat missing. Please run the configuration in LANCIn2.bat.
 if not exist %locf% ping localhost -n 5 >nul
 if not exist %locf% start LANCIn2.bat
-
-echo [!] R/W ...
+cls
+echo [!][2/4] R/W Loading %locf%...
 if exist %locf% (
 set /P location=
 )<%locf%
+cls
+echo [!][3/4] Checking 
 if exist %locf% echo [!] R/W ...
 cd %location%
+if not exist LANCX.txt (
+echo [!] E:404 LANCX Server Path Not Found
+echo [!][4/4] Running Auto-Push...
+pushd %location%
+) ELSE (
 if not exist LANCX.txt echo [!] E:404 LANCX Server Path Not Found
-if not exist LANCX.txt echo [:] Use pushload to load a UNC location from %locf% .
+if not exist LANCX.txt echo Push didn't find %location%.
 if not exist LANCX.txt ping localhost -n 5 >nul
+)
 REM /////////////////////////////////////////////////////////////////////
 REM /////////////////////////////////////////////////////////////////////
 REM /////////////////////////////////////////////////////////////////////
@@ -45,7 +62,6 @@ echo                   Help
 echo               2- ---------------
 if exist LANCX.txt echo                   Login
 if exist %locf% echo                   pushd
-if exist %locf% echo                   pushload
 echo               3- ---------------
 if not exist LANCX.txt echo               [!] Configure
 if %noch2%==0 echo                   SilentLogin
@@ -172,6 +188,8 @@ goto rs1
 cls
 set u=Guest
 set /p u=Username: 
+if exist REG_%u%.usr goto securelog
+:usercheck
 echo Channel needs to be set.
 ping localhost -n 3 >nul
 cls
@@ -193,14 +211,23 @@ goto runsetname
 REM set /p c=Chatlog path (end it in .txt):
 set time=&time /t
 if %noch2%==1 goto CHLo
+if %xmod%==1 (
+echo [!][M][%time%] Moderator %u% Signed In. >> orom-c%c%.txt
+goto CHLo
+)
 if %noch3%==0 echo [!][%time%] %u% Signed In. >> orom-c%c%.txt
 if %noch3%==1 echo [!][CU][%time%] %u% Signed in as a console user. >> orom-c%c%.txt
 
 :CHLo
 cls
-echo Sending - %u%
+if %nochx%==0 echo Sending - %u%
+if %nochx%==1 echo Sending - %u%  (REGISTERED)
+if exist BAN_%u%.usr goto bannedname
+if exist KCK_%u%.tmp goto kicker
 echo --- CH: %c% -----------------------------------------------
 type orom-c%c%.txt
+if exist PM_%u%.log echo ============================================
+if exist PM_%u%.log type PM_%u%.log
 echo --- CH: %c% -----------------------------------------------
 if exist orom-m%c%.txt echo  MOTD:
 if exist orom-m%c%.txt type orom-m%c%.txt
@@ -210,6 +237,7 @@ if %viewmode%==1 echo --------- Admin Oh Admin! Please Read! --------
 if %viewmode%==1 type orom-a%c%.txt
 if %viewmode%==1 echo -----------------------------------------------
 echo.
+set m=
 set /p m=Message: 
 REM Main Message
 if %noch3%==0 echo [%time%] %u%: %m% >> orom-c%c%.txt
@@ -233,6 +261,8 @@ set /p sol=Console:
 REM ! commands
 REM ///////////////////////////////////////////////////////////////////////////
 echo [CU] Checking Command..
+if %sol%==!register goto userreg1
+
 if %sol%==!waffles (
 echo [!][%time%] %u% ate a bunch of waffles. >> orom-c%c%.txt
 goto CHLo
@@ -245,16 +275,22 @@ goto rs1
 if %sol%==!exit (
 echo [%time%] %u% Logged Off. >> orom-c%c%.txt
 ping localhost -n 2 >nul
-Goodbye.
+echo Goodbye.
 ping localhost -n 2 >nul
 exit
 )
 
 if %sol%==!help (
-if %adminpermissions%==0 echo !telladmin
+if %adminpermissions%==0 echo !telladmin: Tell an admin yo issues.
+if %nochx%==0 echo !register: Register your username.
 echo !waffles
-echo !fish
+if %nochx%==0 echo !fish
+if %nochx%==1 echo !fish *
+if %nochx%==1 echo !pm: Privately Message A User.
+if %nochx%==1 echo !cpm: Clear Private Messages.
+if %nochx%==1 echo !nh / !ne: News Header / Ender
 echo !pizza
+if %adminpermissions%==1 echo !penis
 echo !list: Displays channel list
 echo !help: Displays help
 echo !ch: Switches channel
@@ -267,8 +303,13 @@ if %adminpermissions%==1 echo [A] List of Admin Commands
 if %adminpermissions%==1 echo !v: Check build version.
 if %adminpermissions%==1 echo !reset: Reset the chatroom and export to a log.
 if %adminpermissions%==1 echo !
+if %adminpermissions%==1 echo !ban: Ban A user.
+if %adminpermissions%==1 echo !unban: Unban A user.
 if %adminpermissions%==1 echo !viewmode: See complaints.
+if %adminpermissions%==1 echo !kick: Kick A User.
 if %viewmode%==1 echo !clear: Clear complaints.
+if %xmod%==1 echo [M] Moderator Tools
+if %xmod%==1 echo !killadminperm
 pause
 goto CHLo
 )
@@ -330,6 +371,9 @@ set c=%c2%
 if exist orom-x%c2%.txt goto enc1
 goto chatbox
 )
+REM ///////////////////////////////////////////////////////////////////////////
+REM Registered
+if %nochx%==1 goto xu
 
 REM ///////////////////////////////////////////////////////////////////////////
 
@@ -343,6 +387,8 @@ REM ///////////////////////////////////////////////////////////////////////////
 
 :adminsub
 echo [A] Checking Admin Subroutine...
+
+if %sol%==!killadminperm goto superuser1
 
 if %sol%==!reset (
 echo [!] R/W ...
@@ -371,18 +417,39 @@ pause
 goto CHLo
 )
 
+if %sol%==!ban goto banusr
+
+if %sol%==!unban goto unbanusr
+
+if %sol%==!kick goto kickusr
+
 ping localhost -n 2 >nul
 goto CHLo
 
 
+:xu
+
+echo CHECKIN'!
+if %sol%==!pm goto primes
+if %sol%==!cpm del PM_%u%.log
+if %sol%==!nh echo [N]==== >> orom-c%c%.txt
+if %sol%==!nh echo [N]==== Today in the house [%time%]=====NEWSNET===*==[!]= >> orom-c%c%.txt
+if %sol%==!nh echo [N]==== >> orom-c%c%.txt
+if %sol%==!ne echo [N]========================[%time%]=====NEWSNET===*==[!]= >> orom-c%c%.txt
+if %adminpermissions%==1 goto adminsub
+goto CHLo
 REM ///////////////////////////////////////////////////////////////////////////
 REM Extra Command References
 
 :slap
 set slapee=Another Fish
 set /P slapee=Who do you want to slap? 
-if %adminpermissions%==0 echo [!][%time%] %u% slapped %slapee% with A Smelly Fish. >> orom-c%c%.txt
-if %adminpermissions%==1 echo [!][%time%] Admin %u% slapped %slapee% with A Dank Fishstick. >> orom-c%c%.txt
+if %nochx%==1 (
+echo [!][%time%] %u% slapped %slapee% with A Soggy Waffle! >> orom-c%c%.txt
+goto CHLo
+)
+if %adminpermissions%==0 echo [!][%time%] %u% slapped %slapee% with A Smelly Fish! >> orom-c%c%.txt
+if %adminpermissions%==1 echo [!][%time%] Admin %u% slapped %slapee% with A Dank Fishstick! >> orom-c%c%.txt
 goto CHLo
 
 REM ///////////////////////////////////////////////////////////////////////////
@@ -410,24 +477,25 @@ goto chatbox
 goto enc1
 
 :enc2
-if not exist admin.txt echo [!] No admin permissions available.
-if not exist admin.txt ping localhost -n 3 >nul
-if not exist admin.txt goto CHLo
 echo [!] R/W ...
-set admp=nul
-if exist admin.txt (
-set /P admpr=
-)<admin.txt
-set /P admp=Pass: 
-if %admp%==%admpr% (
-echo [!] %admp% --- %admpr% -- Password Correct!
+if not exist admin.txt (
+echo No admin permissions available.
 ping localhost -n 3 >nul
+goto CHLo
+)
+if exist admin.txt (
+set /P afile=
+)<admin.txt
+cls
+echo Please type in the admin password.
+set /P acon=
+if %acon%==%afile% (
+echo Correct. %acon% --- %afile%
+pause
 set adminpermissions=1
 goto CHLo
-) ELSE (
-echo [!] Incorrect Password!
-goto enc2
 )
+goto enc2
 
 :push
 set ipush=0
@@ -437,18 +505,6 @@ if %ipush%==0 goto push
 echo [!] pushd %ipush% ...
 pushd %ipush%
 echo [!] R/W ...
-ping localhost -n 2 >nul
-goto rs1
-
-:pushloader
-echo [!] R/W ...
-echo [!!] R/W %locf%
-if exist %locf% (
-set /P location=
-)<%locf%
-pushd %location%
-if exist LANCX.txt echo Server Found!
-if not exist LANCX.txt echo E:404
 ping localhost -n 2 >nul
 goto rs1
 
@@ -477,3 +533,162 @@ echo ---[%time%]--- To Admin --- %mastersymbol2% ------- By %u% >> orom-a%c%.txt
 echo I'll see this message the next time I log in.
 ping localhost -n 5 >nul
 goto CHLo
+
+:securelog
+echo [!] R/W ...
+if exist REG_%u%.usr (
+set /P userk=
+set /P xmod=
+)<REG_%u%.usr
+cls
+echo Please type in your user password.
+set /P user1k=
+if %user1k%==%userk% (
+echo Correct. %user1k% --- %userk%
+pause
+set nochx=1
+goto usercheck
+)
+goto securelog
+
+:userreg1
+set /P userk=One String Password: 
+echo %userk% > REG_%u%.usr
+echo 0 >> REG_%u%.usr
+echo %userk% saved.
+set nochx=1
+ping localhost -n 3 >nul
+echo [%time%] %u% has just registered their username. >> orom-c%c%.txt
+goto CHLo
+
+:bannedname
+cls
+echo [!] You have been banned for the following reason;
+if exist BAN_%u%.usr (
+set /P banreason=
+)<BAN_%u%.usr
+echo %banreason%
+echo.
+echo Goodbye.
+pause
+exit
+
+:banusr
+set /P banname=Ban: 
+if exist BAN_%banname%.usr (
+echo This user has already been banned.
+ping localhost -n 3 >nul
+goto CHLo
+)
+set banreason=N-A
+set /P banreason=Description? 
+echo [!] R/W ...
+echo %banreason% > BAN_%banname%.usr
+echo The user has been banned.
+echo [BAN][%time%] %banname% was banned for: %banreason%  ::: Admin %u% >> orom-c%c%.txt
+ping localhost -n 3 >nul
+goto CHLo
+
+:unbanusr
+set banname=Guest
+set /P banname=Unban: 
+if exist BAN_%banname%.usr (
+echo [!] R/W ...
+del BAN_%banname%.usr
+echo This user was restored.
+echo [%time%] %banname% was unbanned from LANCX. >> orom-c%c%.txt
+ping localhost -n 3 >nul
+goto CHLo
+)
+if not exist BAN_%banname%.usr (
+echo This user was never banned.
+ping localhost -n 3 >nul
+goto CHLo
+)
+
+:kickusr
+echo Leave Blank to Kick All Guests.
+set kun=Guest
+set /P kun=Kick: 
+echo Kicking > KCK_%kun%.tmp
+echo [!][%time%] Admin %u% kicked %kun%. >> orom-c%c%.txt
+if %kun%==Guest (
+echo [!] Guests are being evicted.
+ping localhost -n 2 >nul
+ping localhost -n 5
+echo Kicking > KCK_%kun%.tmp
+cls
+echo .
+ping localhost -n 5
+echo Kicking > KCK_%kun%.tmp
+cls
+echo ..
+ping localhost -n 5
+echo Kicking > KCK_%kun%.tmp
+cls
+echo ...
+echo Success!
+ping localhost -n 3 >nul
+)
+goto CHLo
+
+:kicker
+cls
+echo You have been kicked!
+pause
+del KCK_%u%.tmp
+goto rs1
+
+:superuser1
+cls
+if %xmod%==1 (
+echo The current password is "%admp%".
+echo !killpower
+echo !cleanlogs
+echo !cleanadmlogs
+echo !changepw
+) ELSE (
+echo [!] FATAL:
+echo You are not A Moderator.
+pause
+goto CHLo
+)
+set xmodse=0
+set /P xmodse=$ 
+if %xmodse%==!killpower (
+del admin.txt
+set adminpermissions=0
+goto rs1
+)
+if %xmodse%==!changepw (
+set /P xmcp=New String: 
+echo %xmcp% > admin.txt
+goto CHLo
+)
+if %xmodse%==!cleanadmlogs (
+del orom-aL*.txt
+echo Cleaned all channels.
+ping localhost -n 3 >nul
+goto CHLo
+)
+if %xmodse%==!cleanlogs (
+del orom-L*.txt
+echo Cleaned all channels.
+ping localhost -n 3 >nul
+goto CHLo
+)
+goto superuser1
+
+:primes
+set pmu=nul
+set /P pmu=PM: 
+set /P pmm=M: 
+if exist REG_%pmu%.usr (
+echo [!][PM][%time%] -FROM- %u%   %pmm% >> PM_%pmu%.log
+goto CHLo
+) ELSE (
+cls
+echo User Not Found!
+ping localhost -n 2 >nul
+goto CHLo
+)

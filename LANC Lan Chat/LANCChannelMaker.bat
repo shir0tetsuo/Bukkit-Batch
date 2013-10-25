@@ -1,7 +1,31 @@
 @echo off
 title LANCChannelMaker
 color 0a
+mode con: cols=90 lines=20 
+:ixf
+cls
+echo LLLLLLLLLLLLLLLLLLLLAAAAAAAAAAAAAAAAAAAAAAANNNNNNNNNNNNNNNNNNNNNNCCCCCCCCCCCCCCCCCCHAT....
+echo .   v3.4 Modbox [Setup]                                                                  .
+echo .   https://github.com/shir0tetsuo/Zero/tree/master/LANC Lan Chat                        .
+echo .                                                                                        .
+echo .   Master Configurator. Don't forget to see the readme on the link!                     .
+echo .   I am not responsible for ANY loss of data.         1. Begin    2. Give Mod           .
+echo ..........................................................................................
+set ix=n
+set /P ix=$ 
+if %ix%==1 goto rs1
+if %ix%==2 goto modg
+if %ix%==n (
+echo Please type a number!
+) ELSE (
+echo That's not a valid option.
+ping localhost -n 2 >nul
+goto ixf
+)
 
+:modg
+echo Blarg
+pause
 :rs1
 cls
 echo.
@@ -10,11 +34,11 @@ echo.
 echo Press any key below to get started.
 pause >nul
 cls
-echo Address to Create LANCX Server (No Quotes):
+echo Address to Create LANCX Server (NON-UNP):
 echo.
-echo Ex.: P:\DropBox 
+echo Ex.: C:\DropBox 
 set dir=
-set /p dir=$ 
+set /p dir=$ "
 cd "%dir%"
 mkdir LANCX
 cd LANCX
@@ -22,7 +46,6 @@ cls
 :build
 set build=
 set /p build=Build: 
-set build=%X%
 
 echo A server exists in this location >"LANCX.txt
 
