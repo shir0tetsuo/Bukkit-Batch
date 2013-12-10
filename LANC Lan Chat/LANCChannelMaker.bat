@@ -22,9 +22,7 @@ echo That's not a valid option.
 ping localhost -n 2 >nul
 goto ixf
 )
-
-:modg
-echo Blarg
+echo You will be taken to the beginning.
 pause
 :rs1
 cls
@@ -107,3 +105,60 @@ type avsrvr.dat
 echo.
 pause
 exit
+
+:modg
+cls
+color F0                
+echo                        J                ""#$$$$$$r                     
+echo                       @                       $$$$b                    
+echo                     .F                        ^*3$$$                   
+echo                    :  4       M   O   D         J$$$N                  
+echo                    $  :F                       :$$$$$                  
+echo                   4F  9                       J$$$$$$$                 
+echo                   4$   k             4$$$$bed$$$$$$$$$                 
+echo                   $$r  'F            $$$$$$$$$$$$$$$$$r                
+echo                   $$$   b.           $$$$$$$$$$$$$$$$$N                
+echo                   $$$$$k 3eeed$$b    $$$Euec."$$$$$$$$$                
+echo    .@$**N.        $$$$$" $$$$$$F'L $$$$$$$$$$$  $$$$$$$                
+echo    :$$L  'L       $$$$$ 4$$$$$$  * $$$$$$$$$$F  $$$$$$F         edNc   
+echo   @$$$$N  ^k      $$$$$  3$$$$*/   $F4$$$$$$$   $$$$$"        d"  z$N  
+echo   $$$$$$   ^k     '$$$"   #$$$F   .$  $$$$$c.u@$$$          J"  @$$$$r 
+echo   $$$$$$$b   *u    ^$L            $$  $$$$$$$$$$$$u@       $$  d$$$$$$ 
+echo    ^$$$$$$.    "NL   "N. z@*     $$$  $$$$$$$$$$$$$P      $P  d$$$$$$$ 
+echo       ^"*$$$$b   '*L   9$E      4$$$  d$$$$$$$$$$$"     d*   J$$$$$r   
+echo            ^$$$$u  '$.  $$$L     "#" d$$$$$$".@$$    .@$"  z$$$$*"     
+echo                Let's give you something for your journey.
+ping localhost -n 3 >nul
+echo Please put your username file into the same folder as the LANCChannelMaker.bat file, then press any key to continue.
+pause >nul
+set us=
+set /P us=Target [Username]: 
+if not exist REG_%us%.usr goto modg
+if exist REG_%us%.usr (
+set /P XNU=
+set /P MC=
+)<REG_%us%.usr
+if %MC%==0 set /a MC= +1
+echo %XNU% > REG_%us%.usr
+echo %MC% >> REG_%us%.usr
+echo The operation completed successfully.
+ping localhost -n 2 >nul
+echo Put REG_%us%.usr back into your LANCX folder.
+pause
+exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -110,6 +110,7 @@ REM Loc
 
 :Configure
 cls
+if not exist loc.dat echo [!] You may need to restart your output console!
 echo Set the full path of the LANCX folder.
 echo If a 404 / warn is returned, try pushload or pushd.
 set noch=1

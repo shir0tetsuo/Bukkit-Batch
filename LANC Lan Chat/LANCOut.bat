@@ -1,4 +1,5 @@
 @echo off
+mode con: cols=62 lines=30
 REM ---------------------------------------------
 REM Start of File
 set location=0
