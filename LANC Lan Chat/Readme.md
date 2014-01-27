@@ -28,6 +28,7 @@ Breakdown of the LANCX Folder;
 	                      | If the second line = 1, the user has moderator permissions.
 	KCK_      .tmp        | An If-Exist Kick & Delete File.
     PM_       .log        | Private Messages.
+	eja.txt               | Maintenance Beacon
 	
 Encrypting Chats
 ------
