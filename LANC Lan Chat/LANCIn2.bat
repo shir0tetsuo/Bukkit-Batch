@@ -302,6 +302,7 @@ echo E:404 The location cannot be used.
 set bug=1
 ) ELSE (
 echo The server was found.
+echo 
 set bug=0
 )
 ping localhost -n 5 >nul

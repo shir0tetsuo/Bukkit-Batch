@@ -14,8 +14,8 @@ set noch3=0
 set nochx=0
 set xmod=0
 set viewmode=0
-set ver=2.5.8.1
-set ver2=Expanded Console Build
+set ver=2.6.0.0
+set ver2=Expanded Functions Build
 set adminpermissions=0
 echo Hello!
 echo v%ver% %ver2%
@@ -213,12 +213,14 @@ REM set /p c=Chatlog path (end it in .txt):
 set time=&time /t
 if %noch2%==1 goto CHLo
 if %xmod%==1 (
+title %RANDOM%
 echo [!][M][%time%] Moderator %u% Signed In. >> orom-c%c%.txt
 goto CHLo
 )
 if %noch3%==0 echo [!][%time%] %u% Signed In. >> orom-c%c%.txt
 if %noch3%==1 echo [!][CU][%time%] %u% Signed in as a console user. >> orom-c%c%.txt
-
+REM //////////////////////////////////// CHLo
+set /a loopMotd=0
 :CHLo
 cls
 if %nochx%==0 echo Sending - %u%
@@ -227,16 +229,56 @@ if exist BAN_%u%.usr goto bannedname
 if exist KCK_%u%.tmp goto kicker
 echo --- CH: %c% -----------------------------------------------
 type orom-c%c%.txt
+REM Message of the Day Looper: +1
+if exist orom-m%c%.txt (
+set /a loopMotd=%loopMotd%+1
+)
 if exist PM_%u%.log echo ============================================
 if exist PM_%u%.log type PM_%u%.log
 echo --- CH: %c% -----------------------------------------------
-if exist orom-m%c%.txt echo  MOTD:
-if exist orom-m%c%.txt type orom-m%c%.txt
-if exist orom-m%c%.txt echo.
-if exist orom-m%c%.txt echo -----------------------------------------------
+REM Message of the Day Looper: EQU & Reset
+if %loopMotd% EQU 11 (
+echo  MOTD:
+type orom-m%c%.txt
+echo.
+echo -----------------------------------------------
+set /a loopMotd=0
+)
+
 if %viewmode%==1 echo --------- Admin Oh Admin! Please Read! --------
 if %viewmode%==1 type orom-a%c%.txt
 if %viewmode%==1 echo -----------------------------------------------
+REM //////////////////////////////////// Kick Everyone
+
+if exist eja.txt (
+if %xmod%==1 goto skipdw
+MODE CON: COLS=80 LINES=20
+color CF
+echo                        J                ""#$$$$$$r                     
+echo                       @                       $$$$b                    
+echo                     .F                        ^*3$$$                   
+echo                    :  4         ERROR           J$$$N                  
+echo                    $  :F                       :$$$$$                  
+echo                   4F  9                       J$$$$$$$                 
+echo                   4$   k             4$$$$bed$$$$$$$$$                 
+echo                   $$r  'F            $$$$$$$$$$$$$$$$$r                
+echo                   $$$   b.           $$$$$$$$$$$$$$$$$N                
+echo                   $$$$$k 3eeed$$b    $$$Euec."$$$$$$$$$                
+echo    .@$**N.        $$$$$" $$$$$$F'L $$$$$$$$$$$  $$$$$$$                
+echo    :$$L  'L       $$$$$ 4$$$$$$  * $$$$$$$$$$F  $$$$$$F         edNc   
+echo   @$$$$N  ^k      $$$$$  3$$$$*/   $F4$$$$$$$   $$$$$"        d"  z$N  
+echo   $$$$$$   ^k     '$$$"   #$$$F   .$  $$$$$c.u@$$$          J"  @$$$$r 
+echo   $$$$$$$b   *u    ^$L            $$  $$$$$$$$$$$$u@       $$  d$$$$$$ 
+echo    ^$$$$$$.    "NL   "N. z@*     $$$  $$$$$$$$$$$$$P      $P  d$$$$$$$ 
+echo       ^"*$$$$b   '*L   9$E      4$$$  d$$$$$$$$$$$"     d*   J$$$$$r   
+echo            ^$$$$u  '$.  $$$L     "#" d$$$$$$".@$$    .@$"  z$$$$*"  
+timeout /T 3 /NOBREAK
+echo        YOU HAVE BEEN EJECTED BY THE MODERATOR FOR MAINTENANCE
+timeout /T 10
+exit
+)
+
+:skipdw
 echo.
 set m=
 set /p m=Message: 
@@ -643,11 +685,13 @@ goto rs1
 :superuser1
 cls
 if %xmod%==1 (
-echo The current password is "%admp%".
+echo The current password is "%afile%".
 echo !killpower
 echo !cleanlogs
 echo !cleanadmlogs
 echo !changepw
+echo !eject
+echo !canceleject
 ) ELSE (
 echo [!] FATAL:
 echo You are not A Moderator.
@@ -657,8 +701,9 @@ goto CHLo
 set xmodse=0
 set /P xmodse=$ 
 if %xmodse%==!killpower (
-del admin.txt
-set adminpermissions=0
+echo xt>admin.txt
+REM del admin.txt
+REM set adminpermissions=0
 goto rs1
 )
 if %xmodse%==!changepw (
@@ -677,6 +722,15 @@ del orom-L*.txt
 echo Cleaned all channels.
 ping localhost -n 3 >nul
 goto CHLo
+)
+if %xmodse%==!eject (
+echo 1>eja.txt
+)
+if %xmodse%==!canceleject (
+@echo on
+del eja.txt
+@echo off
+cls
 )
 goto superuser1
 
