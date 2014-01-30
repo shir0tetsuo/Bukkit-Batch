@@ -2,6 +2,83 @@
 set cols=50
 set lines=15
 mode con: cols=%cols% lines=%lines%
+rem ShadeBoxAt 1 1 15 50 3
+rem ChangeColor 0 7
+rem ShadeBoxAt 2 2 13 48 2
+rem ChangeColor 12 0
+rem ShadeBoxAt 7 24 1 1 2
+rem ChangeColor 10 0
+rem ShadeBoxAt 7 25 1 1 2
+rem ChangeColor 9 0
+rem ShadeBoxAt 8 24 1 1 2
+rem ChangeColor 14 0
+rem ShadeBoxAt 8 25 1 1 2
+rem ChangeColor 4 12
+rem ShadeBoxAt 6 23 2 1 3
+rem ShadeBoxAt 6 24 1 1 3
+rem ChangeColor 2 10
+rem ShadeBoxAt 6 25 1 2 3
+rem ShadeBoxAt 7 26 1 1 3
+rem ChangeColor 1 11
+rem ShadeBoxAt 8 23 2 1 3
+rem ShadeBoxAt 9 24 1 1 3
+rem ChangeColor 6 14
+rem ShadeBoxAt 9 25 1 2 3
+rem ShadeBoxAt 8 26 1 1 3
+rem ChangeColor 7 0
+rem ShadeBoxAt 5 22 1 6 1
+rem ShadeBoxAt 6 27 5 1 1
+rem ShadeBoxAt 6 22 5 1 1
+rem ShadeBoxAt 10 23 1 4 1
+rem ShadeBoxAt 4 30 1 3 1
+rem ShadeBoxAt 2 30 1 3 1
+rem ShadeBoxAt 3 30 3 1 1
+rem ShadeBoxAt 3 32 1 1 1
+rem ShadeBoxAt 6 30 1 3 1
+rem ChangeColor 8 0
+rem ShadeBoxAt 2 34 1 4 1
+rem ShadeBoxAt 4 34 1 4 1
+rem ShadeBoxAt 6 34 1 4 1
+rem ShadeBoxAt 5 34 1 1 1
+rem ShadeBoxAt 3 37 1 1 1
+rem ShadeBoxAt 2 39 5 1 1
+rem ShadeBoxAt 2 40 1 3 1
+rem ShadeBoxAt 3 42 4 1 1
+rem ShadeBoxAt 6 40 1 2 1
+rem ShadeBoxAt 4 40 1 2 1
+rem ShadeBoxAt 12 2 1 48 1
+rem ShadeBoxAt 13 1 1 50 1
+rem ShadeBoxAt 14 1 1 50 1
+rem ShadeBoxAt 9 1 1 21 1
+rem ShadeBoxAt 9 28 1 18 1
+rem ChangeColor 12 11
+rem ShadeBoxAt 2 3 4 1 3
+rem ShadeBoxAt 5 4 1 2 3
+rem ShadeBoxAt 2 6 4 1 3
+rem ShadeBoxAt 2 7 1 3 3
+rem ShadeBoxAt 3 9 3 1 3
+rem ShadeBoxAt 4 7 1 2 3
+rem ShadeBoxAt 2 10 4 1 3
+rem ShadeBoxAt 3 11 1 1 3
+rem ShadeBoxAt 4 12 1 1 3
+rem ShadeBoxAt 5 13 1 1 3
+rem ShadeBoxAt 2 14 4 1 3
+rem ShadeBoxAt 7 2 1 4 3
+rem ShadeBoxAt 8 2 3 1 3
+rem ShadeBoxAt 10 3 1 3 3
+rem ShadeBoxAt 7 7 4 1 3
+rem ShadeBoxAt 7 10 4 1 3
+rem ShadeBoxAt 9 8 1 2 3
+rem ShadeBoxAt 7 12 4 1 3
+rem ShadeBoxAt 7 13 1 3 3
+rem ShadeBoxAt 8 15 3 1 3
+rem ShadeBoxAt 7 17 1 4 3
+rem ShadeBoxAt 8 18 3 1 3
+rem ShadeBoxAt 9 13 1 2 3
+rem ChangeColor 0 15
+rem Locate 25 1
+ping localhost -n 2 >nul
+REM Splash End
 set ccp=4f
 color %ccp%
 REM ---Variables
@@ -11,6 +88,7 @@ set EjectFile=eja.txt
 REM Location File Data
 set lf=loc.dat
 set lfi=0
+set pullhome=0
 REM Virtual Model Data
 set vm=2900e
 set vm1=2.9.0.0
@@ -21,15 +99,16 @@ REM - i4a is Menu
 REM ---Variables END
 REM ---Welcome
 title LANCPackage
-echo                     Welcome!
+echo   Welcome!  
 timeout /t 5
 cls
 REM First Use Lines
 if not exist %lf% (
 echo 
 echo First time use. You will be required to specify
-echo the path of the public folder.
-timeout /T 5
+echo the path of the public folder, or create a new
+echo server with the in-program segment that follows
+timeout /T 15
 goto sof
 )
 :lfd
@@ -54,6 +133,7 @@ REM ---NEWSTARTER
 REM Start of File
 :sof
 mode con: cols=%cols% lines=%lines%
+cls
 color %ccp%
 set i4a=0
 cls
@@ -66,9 +146,15 @@ echo                 3. Color
 echo                 4. Map Network Drive
 echo                 5. Help
 if not exist %sft% (
-echo                 6. New
+echo                 6. New Server
 )
-REM Menu Select
+rem ChangeColor 12 0
+rem ChangeColor 15 4
+rem ShadeBoxAt 1 1 1 50 3
+rem ShadeBoxAt 14 1 1 50 1
+
+rem Locate 25 1
+REM Menu Select ---------------------------------------------------
 set /p i4a=$ 
 if %i4a%==1 goto init
 if %i4a%==2 goto path
@@ -86,12 +172,36 @@ goto sof
 REM ----Cp Breakdown
 REM Initialize Login
 :init
+REM INCOMPLETE///////////////////////////////////////////////////////
 if not exist %sft% (
 echo [!] No path was specified!
 timeout /t 5
 goto sof
 )
-pause
+set cols=50
+set lines=10
+mode con: cols=%cols% lines=%lines%
+set u0=0
+set /p u0=Username: 
+if %u0%==0 (
+echo 
+goto init
+)
+if exist 1.%u0%.u (
+set pullhome=inithome
+goto IDU
+)
+if not exist 1.%u0%.u (
+set ucode=0
+set consu=0
+set admin=0
+set moder=0
+)
+:inithome
+
+REM Menu Prompt login
+echo Output, Input, Console Mode, Account -- Change pw
+
 
 REM End of Login
 REM PathsWitch
@@ -103,7 +213,7 @@ echo Please type in the full path of the server,
 echo then press Enter.
 echo ( Ex:  E:\ServerFolder\ )
 set /P lfi=Path: 
-echo %lfi%>%lf%
+echo %lfi% > %lf%
 pause
 goto lfd
 
@@ -203,7 +313,7 @@ echo 2.user.u       User Private Messages
 echo 3.user.k       User Kick File
 echo 4.user.k       User Ban File and Description
 echo 5.k            Special Maintenance File
-echo.
+echo ch0.k          Chat Passcode
 echo.
 echo.
 pause
@@ -234,7 +344,6 @@ echo It may cause collossal damage.   E403.2 E403.3
 timeout /t 5 /NOBREAK
 exit
 )
-REM Start Setup
 cls
 echo.
 echo New Server Setup %vm1% (%vm%)
@@ -248,10 +357,237 @@ echo 1. Servername
 REM sv.lsv
 echo 2. Location
 echo 3. Channel Data
-echo 4. Channel MOTDs
-echo 5. Admins and Moderators
-echo 6. Encrypted Channels
+echo 4. Admins and Moderators
+echo.
+pause
+cls
+echo STAGE I
+set i3a=My Server
+echo Specify a name for your new server.
+echo Default: My Server
+set /p i3a=$ 
+cls
+echo STAGE II
+echo We will make a directory in
+echo the same folder you have your program running in.
+echo You can move and rename the server folder once
+echo complete. It is recommended that you run the
+echo Map Network Drive segment when running on LAN.
+echo.
+pause
+mkdir TxtServer
+cd TxtServer
+echo %i3a% > %sft%
+REM Channel Math --------
+cls
+echo STAGE III
+echo You are finally entering the more complex
+echo stage of the installation!
+:i3aa
+set /a i3c=3
+echo How many channels does your server have?
+echo Min 2 Max 8
+echo Default is 3.
+set /p i3c=$ 
+if %i3c% LEQ 1 (
+echo Sorry! You can't have less than 2 channels.
+goto i3aa
+)
+if %i3c% GEQ 9 (
+echo Sorry! You can't have more than 8 channels.
+goto i3aa
+)
+REM Channel Math Continued
+
+set /a i6a=1
+REM i6a will continue to i6b
+set /a i6b=%i3c%
+
+:i3cb
+REM CH Name
+REM i3cn# i3cm# Variables
+set i7n%i6a%=Chatroom
+set i7m%i6a%=Welcome to my server!
+set i7x1=N
+set i7x2=N
+set i7x3=N
+set i7x4=N
+set i7x5=N
+set i7x6=N
+set i7x7=N
+set i7x8=N
+REM N - Chatroom Variable
+REM M - MOTD Variable
+REM X - S/P Switch (S for Set and P for Protect)
+REM E - Encrypted Element
+REM   N         M         X        E
+REM i7n1      i7m1      i7x1*
+REM i7n2      i7m2      i7x2*
+REM i7n3      i7m3      i7x3*
+REM i7n4      i7m4      i7x4*
+REM i7n5      i7m5      i7x5*
+REM i7n6      i7m6      i7x6*
+REM i7n7      i7m7      i7x7*
+REM i7n8      i7m8      i7x8*
+echo.
+set /p i7n%i6a%=Channel %i6a% Name: 
+set /p i7m%i6a%=Channel %i6a% MOTD: 
+set /p i7x%i6a%=Enter P to Protect: 
+REM Bug
+if %i6a% GEQ %i6b%+1 goto skipr
+REM Element X Array
+if %i7x1%==P goto Passcode
+if %i7x1%==p goto Passcode
+if %i7x2%==P goto Passcode
+if %i7x2%==p goto Passcode
+if %i7x3%==P goto Passcode
+if %i7x3%==p goto Passcode
+if %i7x4%==P goto Passcode
+if %i7x4%==p goto Passcode
+if %i7x5%==P goto Passcode
+if %i7x5%==p goto Passcode
+if %i7x6%==P goto Passcode
+if %i7x6%==p goto Passcode
+if %i7x7%==P goto Passcode
+if %i7x7%==p goto Passcode
+if %i7x8%==P goto Passcode
+if %i7x8%==p goto Passcode
+:bump
+set i7x%i6a%=S
+ping localhost -n 2 >nul
+set /a i6a=%i6a%+1
+if %i6a% GEQ %i6b%+1 (
+goto skipr
+)
+REM Once last variable equals over, goto skipr
+goto i3cb
+REM if exist chx%i6a%
+REM ENC---------------------------------------------------
+REM Element E
+:Passcode
+cls
+echo Protecting Channel %i6a%
+echo Please enter a passcode.
+rem GetMasked
+echo %result% >> ch%i6a%.k
+goto bump
+:skipr
+REM Dump Files II
+set outlsv=svch.lsv
+echo ------------------ b. %vm% > %outlsv%
+echo %i3a% >> %outlsv%
+echo. >> %outlsv%
+echo. >> %outlsv%
+REM Reset Counter
+set i6a=1
+echo CH %i6a% >> %outlsv%
+:i7
+REM Element Number, N, M
+REM i7n,m,x1
+if %i6a%==1 (
+echo   %i7n1% >> %outlsv%
+echo %i7m1% >> ch-m%i6a%.cht
+)
+REM i7n,m,x2
+if %i6a%==2 (
+echo   %i7n2% >> %outlsv%
+echo %i7m2% >> ch-m%i6a%.cht
+)
+REM i7n,m,x3
+if %i6a%==3 (
+echo   %i7n3% >> %outlsv%
+echo %i7m3% >> ch-m%i6a%.cht
+)
+REM i7n,m,x4
+if %i6a%==4 (
+echo   %i7n4% >> %outlsv%
+echo %i7m4% >> ch-m%i6a%.cht
+)
+REM i7n,m,x5
+if %i6a%==5 (
+echo   %i7n5% >> %outlsv%
+echo %i7m5% >> ch-m%i6a%.cht
+)
+REM i7n,m,x6
+if %i6a%==6 (
+echo   %i7n6% >> %outlsv%
+echo %i7m6% >> ch-m%i6a%.cht
+)
+REM i7n,m,x7
+if %i6a%==7 (
+echo   %i7n7% >> %outlsv%
+echo %i7m7% >> ch-m%i6a%.cht
+)
+REM i7n,m,x8
+if %i6a%==8 (
+echo   %i7n8% >> %outlsv%
+echo %i7m8% >> ch-m%i6a%.cht
+)
+REM Create File
+echo [%time%] Hello, World! > ch%i6a%.cht
+set /a i6a=%i6a%+1
+if %i6a% GEQ %i6b%+1 goto skipr2
+echo CH %i6a% >> %outlsv%
+goto i7
+:skipr2
+REM Admin and Moderator Shit
+cls
+echo Your chatroom channels have been set.
+echo STAGE IV
+REM 1.user.u
+echo You will now create your base user.
+echo It will be given the permissions of a moderator.
+set um=0
+set /p um=Username: 
+if %um%==0 (
+echo This cannot be left blank!
+timeout /t 5
+goto skipr2
+)
+echo Please type in a password.
+rem GetMasked
+echo.
+echo %result% > 1.%um%.u
+echo 1 >> 1.%um%.u
+echo 1 >> 1.%um%.u
+echo 1 >> 1.%um%.u
+echo Your profile has been created.
+echo Welcome, %um%.
+timeout /t 5
+cls
+echo You can give admin permissions to others
+echo via the console. They must be registered
+echo users. Registration can occur when the
+echo user enables the console function and
+echo registers.
 pause
 goto lfd
+
+REM ---END of Setup
+
+:IDU
+if %pullhome%==0 set pullhome=sof
+if 1==1 (
+set /p ucode=
+set /p consu=
+set /p admin=
+set /p moder=
+)<1.%u0%.u
+goto %pullhome%
 REM ---NEW SERVER END
 REM ---NEWSTARTER END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
