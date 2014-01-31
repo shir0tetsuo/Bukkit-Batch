@@ -84,11 +84,13 @@ color %ccp%
 REM ---Variables
 REM Serverside Detection
 set sft=sv.lsv
-set EjectFile=eja.txt
+set EjectFile=5.k
+set admin=0
 REM Location File Data
 set lf=loc.dat
 set lfi=0
 set pullhome=0
+set sfa=admin.u
 REM Virtual Model Data
 set vm=2900e
 set vm1=2.9.0.0
@@ -172,15 +174,15 @@ goto sof
 REM ----Cp Breakdown
 REM Initialize Login
 :init
+cls
 REM INCOMPLETE///////////////////////////////////////////////////////
 if not exist %sft% (
 echo [!] No path was specified!
 timeout /t 5
 goto sof
 )
-set cols=50
-set lines=10
-mode con: cols=%cols% lines=%lines%
+cls
+mode con: cols=50 lines=40
 set u0=0
 set /p u0=Username: 
 if %u0%==0 (
@@ -198,6 +200,11 @@ set admin=0
 set moder=0
 )
 :inithome
+cls
+color %ccp%
+mode con: cols=50 lines=40
+echo You have been logged in.
+timeout /t 5
 
 REM Menu Prompt login
 echo Output, Input, Console Mode, Account -- Change pw
@@ -307,6 +314,7 @@ echo ch-a0.cht      Server Admin Messages
 echo ch-m0.cht      Server Channel MOTD
 echo ch-a0 TD.log   Discarded Admin Messages
 echo ch0 TD.log     Discarded Channel Chats
+REM Channel number: %CHAN%   Username: %u0%   admin
 pause
 echo 1.user.u       User Information File
 echo 2.user.u       User Private Messages
@@ -314,7 +322,7 @@ echo 3.user.k       User Kick File
 echo 4.user.k       User Ban File and Description
 echo 5.k            Special Maintenance File
 echo ch0.k          Chat Passcode
-echo.
+echo admin.u        Admin File
 echo.
 pause
 echo.
@@ -565,6 +573,7 @@ goto lfd
 
 REM ---END of Setup
 
+
 :IDU
 if %pullhome%==0 set pullhome=sof
 if 1==1 (
@@ -573,6 +582,59 @@ set /p consu=
 set /p admin=
 set /p moder=
 )<1.%u0%.u
+if %pullhome%==inithome goto pc0
+goto %pullhome%
+REM PC0 ---------------------
+
+
+
+:pc0
+mode con: cols=22 lines=10
+echo PASSCODE INITIALIZING
+REM puller 1: User Login, puller 2: Channel Login, Puller 3: Admin Login
+set /a ecodef=5
+:pc1
+if %pullhome%==inithome (
+set ecode=%ucode%
+)
+REM Not Existant Yet
+if %pullhome%==channelhome (
+set /p ecode=
+)<ch%chan%.k
+REM Not Existant Yet
+if %pullhome%==adminhome (
+set /p ecode=
+)<%sfa%
+REM Continued
+if %ecodef%==0 (
+cls
+echo Error!
+echo You have failed to
+echo enter the passcode.
+timeout /t 10
+exit
+)
+echo.
+rem ChangeColor 12 0
+rem ShadeBoxAt 1 1 10 22 3
+rem ChangeColor 4 0
+rem ShadeBoxAt 2 2 7 20 3
+echo Enter the passcode
+rem ShadeBoxAt 4 5 1 1 3
+rem Locate 25 1
+REM Enter Password HERE-------------
+rem GetMasked
+echo.
+if %result% EQU %ecode% goto pceof
+if %result% NEQ %ecode% (
+echo 
+set /a ecodef=%ecodef%-1
+goto pc1
+)
+:pceof
+if %pullhome%==adminhome (
+set admin=1
+)
 goto %pullhome%
 REM ---NEW SERVER END
 REM ---NEWSTARTER END
